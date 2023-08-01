@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, HostListener, ViewChild, ElementRef, OnDestroy  } from '@angular/core';
+import { Component, OnInit, NgZone, HostListener, ViewChild, ElementRef  } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SignalRService } from 'src/app/services/signalr.service';
 
@@ -7,7 +7,7 @@ import { SignalRService } from 'src/app/services/signalr.service';
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss']
 })
-export class ChatComponent implements OnInit, OnDestroy {
+export class ChatComponent implements OnInit {
   @ViewChild('messageContainer') private messageContainerRef: ElementRef;
   inputChat: string = '';
   hasConversation: boolean = false;
@@ -85,25 +85,57 @@ export class ChatComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.listChatHistory = JSON.parse(localStorage.getItem('chat')) || [];
     this.listUserChat = this.listUserChat.filter((item) => item.id !== this.user.id);
     this.route.params.subscribe(params => {
       this.idParam = parseInt(params['id']);
       if (this.idParam) {
+        const conversary = this.listConversary.find(item => this.idParam === item.id)
+        const idReceiver = conversary.user1 !== this.user.id ? conversary.user1 : conversary.user2
+        this.userChatWith = this.listUserChat.find(item => item.id === idReceiver);
+        console.log(this.userChatWith)
+
+        switch(this.idParam) {
+          case 1: 
+          this.userChatWith = this.listUserChat
+          this.listChatHistory = JSON.parse(localStorage.getItem('conversation1')) || [];
+          break;
+          case 2: 
+          this.listChatHistory = JSON.parse(localStorage.getItem('conversation2')) || [];
+          break;
+          case 3: 
+          this.listChatHistory = JSON.parse(localStorage.getItem('conversation3')) || [];
+          break;
+        }
         this.hasConversation = true;
         this.ngZone.run(() => {});
       }
     }); 
 
     this.signalRService.startConnectChat(this.user.id);
-    this.signalRService.onConnectionClose(() => {
-      console.log('SignalR connection closed.');
-    });
-
     this.signalRService.addListenerChat(data => {
       if (data.succeeded) {
-        this.listChatHistory = [ ...this.listChatHistory, data.data];
-        localStorage.setItem("chat", JSON.stringify(this.listChatHistory));
+
+        console.log('data', data.data)
+        switch(data.data.conversationId) {
+          case '1': 
+          this.listChatHistory =  JSON.parse(localStorage.getItem('conversation1')) || [];
+          localStorage.setItem("conversation1", JSON.stringify([ ...this.listChatHistory, data.data]));
+          this.listChatHistory = JSON.parse(localStorage.getItem('conversation1'))
+          break;
+          case '2': 
+          this.listChatHistory = JSON.parse(localStorage.getItem('conversation2')) || [];
+          localStorage.setItem("conversation2", JSON.stringify([ ...this.listChatHistory, data.data]));
+          this.listChatHistory = JSON.parse(localStorage.getItem('conversation2'))
+          break;
+          case '3': 
+          this.listChatHistory = JSON.parse(localStorage.getItem('conversation3')) || [];
+          localStorage.setItem("conversation3", JSON.stringify([ ...this.listChatHistory, data.data]));
+          this.listChatHistory = JSON.parse(localStorage.getItem('conversation3'))
+          break;
+        }
+
+        console.log(this.listChatHistory)
+
         this.ngZone.run(() => {});
       }
     })
@@ -127,12 +159,15 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   sendMess() {
     const mess = {
+      ConversationId: `${this.idParam}`,
       SenderName: this.myName,
       ReceiverId: this.userChatWith.id,
       ReceiverName: `${this.userChatWith.lastName} ${this.userChatWith.firstName}`,
       Content: this.inputChat,
       Timming: new Date()
     }
+
+    console.log(this.userChatWith)
 
     this.signalRService.sendMessageChat(mess);
     this.inputChat = '';
@@ -159,14 +194,13 @@ export class ChatComponent implements OnInit, OnDestroy {
         (obj.hasOwnProperty('user2') && (obj['user2'] === senderId || obj['user2'] === receiverId))
       );
     });
+
+    this.userChatWith = this.listUserChat.find(item => item.id === receiverId);
+    console.log(this.userChatWith);
     this.router.navigate([`/chat/${foundElement.id}`]);
   }
 
   handleSelection(event) {
     this.inputChat += event.char;
-  }
-
-  ngOnDestroy() {
-    this.signalRService.stopConnection();
   }
 }

@@ -11,14 +11,13 @@ export class SignalRService {
   private hubConnection: signalR.HubConnection;
   public notiReceived: Subject<string> = new Subject<string>();
   public listNoti: string[] = [];
+  apiUrl = 'http://www.signalr-test.somee.com';
 
   public startConnection(): void {
-    // const apiUrl = 'http://192.168.2.173';
-    const apiUrl = 'http://localhost';
     // const user = JSON.parse(localStorage.getItem('ttsuser'));
      const user = 'sjkujdijasd';
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(apiUrl + `/hub/notify?UserId=${user}`)
+      .withUrl(this.apiUrl + `/hub/notify?UserId=${user}`)
       .withAutomaticReconnect()
       .build();
 
@@ -52,10 +51,8 @@ export class SignalRService {
   }
 
   startConnectChat(id): void {
-    // const apiUrl = 'http://192.168.2.173';
-    const apiUrl = 'http://localhost';
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(apiUrl + `/hub/chat?UserId=${id}`)
+      .withUrl(this.apiUrl + `/hub/chat?UserId=${id}`)
       .withAutomaticReconnect()
       .build();
 
@@ -72,7 +69,7 @@ export class SignalRService {
     });
   }
 
-  sendMessageChat(mess: object): void {
+  sendMessageChat(mess): void {
     this.hubConnection.invoke('SendMessage', mess)
       .catch(err => console.error('Error while sending message: ', err));
   }
