@@ -301,6 +301,7 @@ export class ChatComponent implements OnInit {
   conversaryActive: any;
   idParam = 1;
   toggled: boolean = false;
+  isSpinning: boolean = true;
 
   constructor(
     private signalRService: SignalRService,
@@ -310,6 +311,25 @@ export class ChatComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    // show toast notify window
+    if ('Notification' in window) {
+      if (Notification.permission !== 'granted') {
+          // cấp quyền hiển thị thông báo trên window
+          Notification.requestPermission().then(permission => {
+              if (permission === 'granted') {
+                  // window được cấp quyền hiển thị thông báo
+                  // action...
+              } else {
+                  // window không được cấp quyền hiển thị thông báo
+                  // action...
+              }
+          });
+      } else {
+          // đã cấp quyền trước đó
+          // action
+      }
+    }
+
     this.listUserChat = this.listUserChat.filter((item) => item.id !== this.user.id);
 
     this.route.params.subscribe(params => {
@@ -365,7 +385,37 @@ export class ChatComponent implements OnInit {
         this.ngZone.run(() => { });
       }
     })
+
+    this.signalRService.onConnected(data => {
+      if (data.succeeded) { 
+        console.log(this.listUserChat);  
+       this.listUserChat = this.listUserChat.map(item => {
+          return {
+            ...item,
+            isOnline: item.id === data.data.userId ? true : false
+          }
+       });
+       this.ngZone.run(() => {});
+      }
+    })
+
+    this.signalRService.onDisconnected(data => {
+      if (data.succeeded) { 
+        this.listUserChat = this.listUserChat.map(item => {
+          if (item.id === data.data.userId) {
+           return {
+             ...item,
+             isOnline: false
+           }
+          }
+        });
+        this.ngZone.run(() => {});
+       }
+    })
+
     this.myName = `${this.user.lastName} ${this.user.firstName}`
+
+    this.isSpinning = false;
   }
 
   ngAfterViewChecked() {
@@ -392,9 +442,9 @@ export class ChatComponent implements OnInit {
       Content: this.inputChat,
       Timming: new Date()
     }
-
     this.signalRService.sendMessageChat(mess);
     this.inputChat = '';
+    this.toastNotification();
   }
 
   checkTime(time1, time2) {
@@ -427,6 +477,16 @@ export class ChatComponent implements OnInit {
 
   handleSelection(event) {
     this.inputChat += event.char;
+  }
+
+  toastNotification() {
+    const title = 'Tiêu đề thông báo';
+    const options: NotificationOptions = {
+        body: `Nội dung thông báo`
+    };
+
+    // khởi tạo notification => sau khi khởi tạo, notification sẽ tự thông báo lên window
+    const notification = new Notification(title, options);
   }
 }
 

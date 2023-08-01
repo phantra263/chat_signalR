@@ -30,6 +30,20 @@
         &.active {
           background: #eaf3ff;
         }
+        .wrap-avartar {
+          position: relative;
+          .online {
+            position: absolute;
+            content: '';
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: green;
+            border: 2px solid #fff;
+            bottom: 0;
+            right: 3px;
+          }
+        }
         img {
           width: 40px;
           height: 40px;
@@ -218,4 +232,7 @@
       }
     }
   }
+}
+::ng-deep .ant-spin-nested-loading {
+  width: 100%;
 }
