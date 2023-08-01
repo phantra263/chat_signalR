@@ -1,0 +1,9 @@
+
+.s2-action-bar-2 > div > nz-form-item { margin-bottom: 5px; }
+.s2-action-bar-2 > div > nz-form-item > nz-form-control { max-width: 100% }
+.s2-table-thead-tr > th { padding: 5px 10px; text-align: center }
+.s2-table-tbody-tr > td { padding: 10px 5px }
+.s2-text-center { text-align: center; }
+.s2-text-right { text-align: right; }
+.s2-btn-action { font-size: 16px !important; cursor: pointer; margin-right: 5px !important; }
+.s2-table-tbody-tr > td > * { margin: 0; }

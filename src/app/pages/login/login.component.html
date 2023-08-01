@@ -1,0 +1,39 @@
+<div nz-row nzJustify="space-around" nzAlign="middle" style="height: 80vh;">
+
+  <div nz-col nzFlex="250px" class="s2-form-login">
+    <!-- <div class="login-logo-img"><img src="../../../assets/images/esuhai_vuong.png" /></div>
+    <div class="login-logo-title"><span>Success in Shigoto</span></div> -->
+    <div class="login-logo-img"><img src="../../../assets/images/esuhai_logo_ngang.png" /></div>
+
+    <form nz-form [formGroup]="validateForm" class="s2-login-form" (ngSubmit)="ngLogin()" nzLayout="vertical">
+      <nz-form-item>
+        <nz-form-control nzErrorTip="">
+          <nz-input-group nzPrefixIcon="user">
+            <input type="text" nz-input formControlName="userName" placeholder="Username" />
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-control nzErrorTip="">
+          <nz-input-group nzPrefixIcon="lock">
+            <input type="password" nz-input formControlName="password" placeholder="Password" />
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-control>
+          <button nz-button class="login-form-button" nzType="primary" [nzLoading]="loading" style="width: 100%">Đăng
+            nhập</button>
+
+        </nz-form-control>
+      </nz-form-item>
+
+    </form>
+
+    <div class="login-footer">
+      <span>Copyright © 2022 ESUHAI Co., Ltd.</span>
+    </div>    
+  </div>
+</div>  

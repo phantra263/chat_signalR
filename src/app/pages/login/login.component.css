@@ -1,0 +1,14 @@
+.s2-form-login { text-align: center; }
+/* .s2-form-login > .login-logo-img > img { width: 100px; border-radius: 50%; } */
+.s2-form-login > .login-logo-img > img { width: 250px; }
+.s2-form-login > .login-logo-title > span { font-size: 24px; color: red; }
+
+form.s2-login-form { background-color: #f6f8fa; border: 1px solid #eaecef; padding: 10px; margin-top: 5px; }
+form.s2-login-form > nz-form-item { margin-bottom: 10px; }
+
+.login-footer { margin-top: 5px; text-align: right; font-size: 12px; } 
+
+.s2-login-loading {
+  font-size: 110px; position: absolute; top: -5px;
+  text-align: center !important; left: 94px; color: white;
+}
