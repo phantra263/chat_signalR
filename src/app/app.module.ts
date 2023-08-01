@@ -14,7 +14,7 @@ import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { IconsProviderModule } from './icons-provider.module';
 import { SignalRService } from './services/signalr.service';
-import  {  NgxEmojiPickerModule  }  from  'ngx-emoji-picker';
+import { NgxEmojiPickerModule } from 'ngx-emoji-picker';
 
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -87,6 +87,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     AppComponent,
     BreadcrumbComponent,
 
+    // Chat2Component,
     ChatComponent,
     LoginComponent,
     HasRoleDirective
