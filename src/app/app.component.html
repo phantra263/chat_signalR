@@ -40,8 +40,6 @@
         <ng-template #popupInfomation>
           <div>
             <ul nz-menu class="s2-userInfo-dropdown">
-              <!-- <li nz-menu-item><i nz-icon nzType="user" nzTheme="outline"></i>Thông tin cá nhân</li>
-              <li nz-menu-item (click)="ngLogout()"><i nz-icon nzType="logout" nzTheme="outline"></i> Logout</li> -->
 
               <li nz-menu-item *ngFor="let user of listUser" (click)="changeAccount(user)">
                 {{user.lastName}} {{ user.firstName }}
