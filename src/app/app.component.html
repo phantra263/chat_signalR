@@ -3,8 +3,11 @@
     [(nzCollapsed)]="isCollapsed" [nzTrigger]="null">
     <div class="sidebar-logo">
       <a href="/">
-        <img src="../assets/images/esuhai_vuong.png" alt="logo">
-        <h1 style="margin-top: -10px;">Esuhai TTS</h1>
+        <img style="background-color: #108ee9" src="https://cryptologos.cc/logos/chatcoin-chat-logo.png" alt="logo">
+        <h1
+          style="margin-left: 10px; margin-top: -10px;font-family: 'Noto Sans JP', sans-serif; font-family: 'Pacifico', cursive; font-size:16px; letter-spacing: 1px; color: rgb(41, 39, 39);">
+          Chat
+          with me</h1>
       </a>
     </div>
 
@@ -19,7 +22,6 @@
       <span style="font-size: 12px;">Version: </span>
       <span style="font-size: 12px;">{{version}}</span>
     </div>
-
   </nz-sider>
 
   <nz-layout class="right-layout" [ngClass]="isCollapsed ? 'collapse' : ''">
@@ -29,9 +31,9 @@
           <i class="trigger" nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"></i>
         </span>
 
-        <div class="header-right">  
-          <nz-avatar nzSize="large" nzIcon="user" nzSrc=""
-            nz-popover nzPopoverTrigger="click" [nzPopoverContent]="popupInfomation" nzPopoverPlacement="bottomRight">
+        <div class="header-right">
+          <nz-avatar nzSize="large" nzIcon="user" nzSrc="" nz-popover nzPopoverTrigger="click"
+            [nzPopoverContent]="popupInfomation" nzPopoverPlacement="bottomRight">
           </nz-avatar>
         </div>
 
@@ -42,7 +44,7 @@
               <li nz-menu-item (click)="ngLogout()"><i nz-icon nzType="logout" nzTheme="outline"></i> Logout</li> -->
 
               <li nz-menu-item *ngFor="let user of listUser" (click)="changeAccount(user)">
-                {{user.lastName}} {{ user.firstName }} 
+                {{user.lastName}} {{ user.firstName }}
               </li>
             </ul>
           </div>

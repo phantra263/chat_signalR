@@ -79,7 +79,6 @@ export class AppComponent implements OnInit {
   }
 
   changeAccount(user) {
-    console.log(user)
     this.currUser = user;
     localStorage.setItem('currentAcc', JSON.stringify(user));
     window.location.reload();

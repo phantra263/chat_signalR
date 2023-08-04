@@ -11,7 +11,7 @@ export class SignalRService {
   private hubConnection: signalR.HubConnection;
   public notiReceived: Subject<string> = new Subject<string>();
   public listNoti: string[] = [];
-  private apiUrl = 'http://www.signalr-test.somee.com';
+  private apiUrl = 'https://www.signalr-test.somee.com';
   // private apiUrl = 'http://localhost:5000';
 
   startConnectChat(id: string): void {
@@ -22,16 +22,16 @@ export class SignalRService {
 
     this.hubConnection.start()
       .then(() => {
-        console.log('Kết nối thành công');
+        console.info('Kết nối thành công');
       })
-      .catch(err => console.log('Xảy ra lỗi khi connect đến signal hub: ' + err));
+      .catch(err => console.error('Xảy ra lỗi khi connect đến signal hub: ' + err));
   }
 
   stopConnection() {
     if (this.hubConnection.state === signalR.HubConnectionState.Connected) {
       this.hubConnection.stop()
         .then(() => {
-          console.log('Ngắt kết nối thành công');
+          console.info('Ngắt kết nối thành công');
         })
         .catch(err => {
           console.error('Xảy ra lỗi khi stop connect signal hub:', err);
@@ -56,6 +56,12 @@ export class SignalRService {
     });
   }
 
+  onGetListUserOnline(callback: (data: any) => void) {
+    this.hubConnection.on('OnGetListUserOnline', data => {
+      callback(data);
+    });
+  }
+
   onDisconnected(callback: (data: any) => void) {
     this.hubConnection.on('OnDisconnected', data => {
       callback(data);
@@ -65,6 +71,12 @@ export class SignalRService {
   onCloseConnection(callback: (data: any) => void) {
     this.hubConnection.onclose((error: Error) => {
       callback(error);
+    });
+  }
+
+  onReceiveNotificationMessage(callback: (data: any) => void) {
+    this.hubConnection.on('ReceiveNotificationMessage', data => {
+      callback(data);
     });
   }
 }
