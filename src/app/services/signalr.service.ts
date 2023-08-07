@@ -40,7 +40,7 @@ export class SignalRService {
   }
 
   sendMessageChat(mess: object): void {
-    this.hubConnection.invoke('SendMessageV2', mess)
+    this.hubConnection.invoke('SendMessage', mess)
       .catch(err => console.error('Xảy ra lỗi khi gửi tin nhắn: ', err));
   }
 

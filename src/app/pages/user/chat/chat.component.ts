@@ -88,7 +88,7 @@ export class ChatComponent implements OnInit {
   conversaryActive: any;
   idParam = 1;
   toggled: boolean = false;
-  isSpinning: boolean = true;
+  isSpinning: boolean = false;
 
   constructor(
     private signalRService: SignalRService,
@@ -105,15 +105,12 @@ export class ChatComponent implements OnInit {
         Notification.requestPermission().then(permission => {
           if (permission === 'granted') {
             // window được cấp quyền hiển thị thông báo
-            // action...
           } else {
             // window không được cấp quyền hiển thị thông báo
-            // action...
           }
         });
       } else {
         // đã cấp quyền trước đó
-        // action
       }
     }
 
@@ -127,21 +124,21 @@ export class ChatComponent implements OnInit {
         this.getMessage();
 
         this.hasConversation = true;
-
         this.ngZone.run(() => { });
       }
+
     });
 
     this.signalRService.startConnectChat(this.user.id);
+
 
     this.signalRService.onConnected(data => {
       if (data.succeeded) {
         var userOnline = this.listUserChat.find(x => x.id === data.data.userId);
 
         userOnline.isOnline = true;
-
-        this.ngZone.run(() => { });
       }
+      this.ngZone.run(() => { });
     });
 
     this.signalRService.onGetListUserOnline(data => {
@@ -158,18 +155,26 @@ export class ChatComponent implements OnInit {
           });
         });
       }
-
+      this.userChatWith = this.listUserChat.find(item => item.id === this.userChatWith.id);
       this.ngZone.run(() => { });
     });
 
     this.signalRService.onDisconnected(data => {
+      console.log(data)
       if (data.succeeded) {
-        var userOnline = this.listUserChat.find(x => x.id === data.data.userId);
-
-        userOnline.isOnline = false;
-
-        this.ngZone.run(() => { });
+        this.listUserChat = this.listUserChat.map((item) => {
+          if (item.id === data.data.userId) {
+            return {
+              ...item,
+              isOnline: false
+            }
+          } 
+          return item
+        });
       }
+
+      this.userChatWith = this.listUserChat.find(item => item.id === this.userChatWith.id);
+      this.ngZone.run(() => { });
     });
 
     this.signalRService.onCloseConnection(err => {
@@ -177,6 +182,7 @@ export class ChatComponent implements OnInit {
     });
 
     this.signalRService.onReceiveMessage(data => {
+      console.log(data);
       if (data.succeeded) {
 
         localStorage.setItem("messages", JSON.stringify([...this.listChatHistory, data.data]));
@@ -197,8 +203,6 @@ export class ChatComponent implements OnInit {
     });
 
     this.myName = `${this.user.lastName} ${this.user.firstName}`
-
-    this.isSpinning = false;
   }
 
   getMessage() {
