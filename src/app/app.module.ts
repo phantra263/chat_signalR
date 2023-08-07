@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
-import { TokenInterceptor } from './token.interceptor';
-import { HasRoleDirective } from './directives/hasRole.directive';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NZ_I18N } from 'ng-zorro-antd/i18n';
@@ -66,7 +64,6 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzNoAnimationModule } from 'ng-zorro-antd/core/no-animation';
-import { LoginComponent } from './pages/login/login.component';
 import { TimeAgoPipe } from './pipes/time-ago.pipe';
 import { ChatComponent } from './pages/user/chat/chat.component';
 import { ChatService } from './services/chat.service';
@@ -88,9 +85,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     BreadcrumbComponent,
 
     // Chat2Component,
-    ChatComponent,
-    LoginComponent,
-    HasRoleDirective
+    ChatComponent
   ],
   imports: [
     BrowserModule,
@@ -164,7 +159,6 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     ChatService,
 
     ThemeService,
-    { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
     { provide: NZ_I18N, useValue: en_US }],
   bootstrap: [AppComponent],
   entryComponents: []

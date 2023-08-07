@@ -11,8 +11,8 @@ export class SignalRService {
   private hubConnection: signalR.HubConnection;
   public notiReceived: Subject<string> = new Subject<string>();
   public listNoti: string[] = [];
-  private apiUrl = 'https://www.signalr-test.somee.com';
-  // private apiUrl = 'http://localhost:5000';
+  // private apiUrl = 'https://www.signalr-test.somee.com';
+  private apiUrl = 'http://192.168.2.173';
 
   startConnectChat(id: string): void {
     this.hubConnection = new signalR.HubConnectionBuilder()
@@ -40,7 +40,7 @@ export class SignalRService {
   }
 
   sendMessageChat(mess: object): void {
-    this.hubConnection.invoke('SendMessage', mess)
+    this.hubConnection.invoke('SendMessageV2', mess)
       .catch(err => console.error('Xảy ra lỗi khi gửi tin nhắn: ', err));
   }
 

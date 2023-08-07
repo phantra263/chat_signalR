@@ -12,8 +12,6 @@
 
       <nz-tabset>
         <nz-tab nzTitle="Người dùng">
-          {{listUserChat[0] === userChatWith.id}}
-
           <ul class="list-user" id="list-user">
             <li *ngFor="let data of listUserChat"  [ngClass]="data.id === userChatWith.id ? 'active' : ''" (click)="changeConversary(user.id, data.id)">
               <div class="wrap-avartar">

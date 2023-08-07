@@ -22,6 +22,10 @@
   width: 100%;
   overflow:hidden auto;
   height: calc(100vh - 90px);
+  li.active {
+    background-color: #e6f7ff;
+    color: #1890ff;
+  }
 }
 /* .sidebar-logo {
   height: 55px;

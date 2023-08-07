@@ -2,7 +2,6 @@ import { Component, OnInit, NgZone  } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { environment } from 'src/environments/environment';
 import { SignalRService } from './services/signalr.service';
-import { AuthService } from './services/auth.service';
 import { NotificationService } from './services/notification.service';
 import { NavigationExtras, Router } from '@angular/router';
 
@@ -72,7 +71,6 @@ export class AppComponent implements OnInit {
   }
 
   constructor(
-    public authService: AuthService
     ) {}
 
   ngOnInit() {
