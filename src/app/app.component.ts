@@ -21,7 +21,7 @@ export class AppComponent implements OnInit {
     email: "vinhhq@esuhai.com",
     firstName: "Vinh",
     lastName: "Huỳnh Quang",
-    avatar: "https://picsum.photos/50/50",
+    avatar: "https://i.imgur.com/dXQ9pU3.png",
     lastMess: "Hãy chọn một đoạn chat hoặc bắt đầu cuộc trò chuyện mới",
     lastTimeMess: '2023-07-26T08:07:43.127'
   };
@@ -33,18 +33,18 @@ export class AppComponent implements OnInit {
       email: "vinhhq@esuhai.com",
       firstName: "Vinh",
       lastName: "Huỳnh Quang",
-      avatar: "https://picsum.photos/50/50",
+      avatar: "https://i.imgur.com/dXQ9pU3.png",
       lastMess: "Hãy chọn một đoạn chat hoặc bắt đầu cuộc trò chuyện mới",
       lastTimeMess: '2023-07-26T08:07:43.127'
     },
     {
       id: "FC938DD7-F4ED-4CD0-A7AA-975BC0D06D67",
       userName: "S602",
-      email: "duyphuong@esuhai.com",
-      firstName: "Phương",
-      lastName: "Lê Duy",
-      avatar: "https://picsum.photos/50/50",
-      lastMess: "Hãy chọn một đoạn chat hoặc bắt đầu cuộc trò chuyện mới",
+      email: "trapc@esuhai.com",
+      firstName: "Trà",
+      lastName: "Phan Công",
+      avatar: "https://i.imgur.com/244QDmq.png",
+      lastMess: "Hãy chọn một đoạn chat hoặc bắt đầu",
       lastTimeMess: '2023-07-26T08:07:43.127'
     },
     {
@@ -53,7 +53,7 @@ export class AppComponent implements OnInit {
       email: "nam@esuhai.com",
       firstName: "Nam",
       lastName: "Lê Nhật",
-      avatar: "https://picsum.photos/50/50",
+      avatar: "https://i.imgur.com/Yb8zLX2.png",
       lastMess: "Hãy chọn một đoạn chat hoặc bắt đầu cuộc trò chuyện mới",
       lastTimeMess: '2023-07-26T08:07:43.127'
     }

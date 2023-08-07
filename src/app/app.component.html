@@ -25,14 +25,14 @@
   </nz-sider>
 
   <nz-layout class="right-layout" [ngClass]="isCollapsed ? 'collapse' : ''">
-    <nz-header style="height: 55px; z-index: 20;">
-      <div class="app-header s2-app-header" style="height: 55px;" [ngClass]="isCollapsed ? 'collapse' : ''">
+    <nz-header style="height: 55px; z-index: 20;" class="app-header">
+      <div class="s2-app-header" style="height: 55px;" [ngClass]="isCollapsed ? 'collapse' : ''">
         <span class="header-trigger" (click)="isCollapsed = !isCollapsed">
           <i class="trigger" nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"></i>
         </span>
 
         <div class="header-right">
-          <nz-avatar nzSize="large" nzIcon="user" nzSrc="" nz-popover nzPopoverTrigger="click"
+          <nz-avatar nzSize="large" nzIcon="user" nzSrc="user.avatar" nz-popover nzPopoverTrigger="click"
             [nzPopoverContent]="popupInfomation" nzPopoverPlacement="bottomRight">
           </nz-avatar>
         </div>
@@ -55,8 +55,7 @@
         </div>
       </div>
     </nz-header>
-    <nz-content>
-      <app-breadcrumb></app-breadcrumb>
+    <nz-content style="padding-top: 42px;">
       <router-outlet></router-outlet>
     </nz-content>
   </nz-layout>

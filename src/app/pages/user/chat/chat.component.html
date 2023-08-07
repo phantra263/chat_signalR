@@ -13,7 +13,7 @@
       <nz-tabset>
         <nz-tab nzTitle="Người dùng">
           <ul class="list-user" id="list-user">
-            <li *ngFor="let data of listUserChat"  [ngClass]="data.id === userChatWith.id ? 'active' : ''" (click)="changeConversary(user.id, data.id)">
+            <li *ngFor="let data of listUserChat"  [ngClass]="hasConversation && data.id === userChatWith.id ? 'active' : ''" (click)="changeConversary(user.id, data.id)">
               <div class="wrap-avartar">
                 <img [src]="data.avatar" alt="">
                 <span class="online" *ngIf="data.isOnline"></span>
@@ -27,7 +27,7 @@
                 </div>
               </div>
 
-              <span class="mark"></span>
+              <span class="mark" *ngIf="!data.seen"></span>
             </li>
           </ul>
         </nz-tab>
@@ -56,7 +56,7 @@
           <h1 *ngIf="!hasConversation" class="mess-empty">Hãy chọn một đoạn chat hoặc bắt đầu cuộc trò chuyện mới</h1>
   
           <div class="detail-user-chat mess-empty" *ngIf="hasConversation && listChatHistory.length === 0">
-            <img src="https://picsum.photos/50/50" alt="">
+            <img [src]="userChatWith.avatar" alt="">
             <h3>
               {{userChatWith.lastName}} {{userChatWith.firstName}}
             </h3>
@@ -69,7 +69,7 @@
                 <div class="wrap-message"
                   [ngClass]="myName === data.senderName ? 'my-message' : ''">
                   <figure>
-                    <img src="https://picsum.photos/50/50" alt="" 
+                    <img [src]="myName === data.senderName ? user.avatar : userChatWith.avatar" alt=""
                     *ngIf="(i === 0 || i > 0 && this.checkShowAvatar(listChatHistory[i - 1], data))">
                   </figure>
              

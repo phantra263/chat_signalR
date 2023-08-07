@@ -11,8 +11,9 @@ export class SignalRService {
   private hubConnection: signalR.HubConnection;
   public notiReceived: Subject<string> = new Subject<string>();
   public listNoti: string[] = [];
-  private apiUrl = 'https://www.signalr-test.somee.com';
-  // private apiUrl = 'http://192.168.2.173';
+  // private apiUrl = 'https://www.signalr-test.somee.com';
+  private apiUrl = 'http://192.168.2.173';
+  flagConnect: boolean = false;
 
   startConnectChat(id: string): void {
     this.hubConnection = new signalR.HubConnectionBuilder()
@@ -25,6 +26,7 @@ export class SignalRService {
         console.info('Kết nối thành công');
       })
       .catch(err => console.error('Xảy ra lỗi khi connect đến signal hub: ' + err));
+    this.flagConnect = true;
   }
 
   stopConnection() {
@@ -48,6 +50,17 @@ export class SignalRService {
     this.hubConnection.on('ReceiveMessage', data => {
       callback(data);
     });
+  }
+
+  OnReadMessage(callback: (data: any) => void) {
+    this.hubConnection.on('OnReadMessage', data => {
+      callback(data);
+    });
+  }
+
+  ReadMessage(mess: object): void {
+    this.hubConnection.invoke('ReadMessage', mess)
+    .catch(err => console.error('Xảy ra lỗi khi đọc tin nhắn ', err));
   }
 
   onConnected(callback: (data: any) => void) {

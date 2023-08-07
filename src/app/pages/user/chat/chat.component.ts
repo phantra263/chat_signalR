@@ -23,7 +23,7 @@ export class ChatComponent implements OnInit {
     email: "vinhhq@esuhai.com",
     firstName: "Vinh",
     lastName: "Huỳnh Quang",
-    avatar: "https://picsum.photos/50/50",
+    avatar: "https://i.imgur.com/dXQ9pU3.png",
     lastMess: "Hãy chọn một đoạn chat hoặc bắt đầu cuộc trò chuyện mới",
     lastTimeMess: '2023-07-26T08:07:43.127'
   };
@@ -40,19 +40,21 @@ export class ChatComponent implements OnInit {
       email: "vinhhq@esuhai.com",
       firstName: "Vinh",
       lastName: "Huỳnh Quang",
-      avatar: "https://picsum.photos/50/50",
+      avatar: "https://i.imgur.com/dXQ9pU3.png",
       lastMess: "Hãy chọn một đoạn chat hoặc bắt đầu cuộc trò chuyện mới",
-      lastTimeMess: '2023-07-26T08:07:43.127'
+      lastTimeMess: '2023-07-26T08:07:43.127',
+      seen: false
     },
     {
       id: "FC938DD7-F4ED-4CD0-A7AA-975BC0D06D67",
       userName: "S602",
-      email: "duyphuong@esuhai.com",
-      firstName: "Phương",
-      lastName: "Lê Duy",
-      avatar: "https://picsum.photos/50/50",
-      lastMess: "Hãy chọn một đoạn chat hoặc bắt đầu cuộc trò chuyện mới",
-      lastTimeMess: '2023-07-26T08:07:43.127'
+      email: "trapc@esuhai.com",
+      firstName: "Trà",
+      lastName: "Phan Công",
+      avatar: "https://i.imgur.com/244QDmq.png",
+      lastMess: "Hãy chọn một đoạn chat hoặc bắt đầu",
+      lastTimeMess: '2023-07-26T08:07:43.127',
+      seen: false
     },
     {
       id: "FC938DD7-F4ED-4CD0-A7AA-AAAAAAAA",
@@ -60,9 +62,10 @@ export class ChatComponent implements OnInit {
       email: "nam@esuhai.com",
       firstName: "Nam",
       lastName: "Lê Nhật",
-      avatar: "https://picsum.photos/50/50",
+      avatar: "https://i.imgur.com/Yb8zLX2.png",
       lastMess: "Hãy chọn một đoạn chat hoặc bắt đầu cuộc trò chuyện mới",
-      lastTimeMess: '2023-07-26T08:07:43.127'
+      lastTimeMess: '2023-07-26T08:07:43.127',
+      seen: false
     }
   ];
 
@@ -98,6 +101,8 @@ export class ChatComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.signalRService.startConnectChat(this.user.id);
+
     // show toast notify window
     if ('Notification' in window) {
       if (Notification.permission !== 'granted') {
@@ -123,13 +128,17 @@ export class ChatComponent implements OnInit {
       if (this.idParam) {
         this.getMessage();
 
+        // gửi event lên server check đã xem
+        // this.signalRService.ReadMessage({
+        //   receiverId: this.userChatWith.id,
+        //   seen: true
+        // })
+
         this.hasConversation = true;
         this.ngZone.run(() => { });
       }
 
     });
-
-    this.signalRService.startConnectChat(this.user.id);
 
 
     this.signalRService.onConnected(data => {
@@ -182,25 +191,42 @@ export class ChatComponent implements OnInit {
     });
 
     this.signalRService.onReceiveMessage(data => {
-      console.log(data);
       if (data.succeeded) {
-
         localStorage.setItem("messages", JSON.stringify([...this.listChatHistory, data.data]));
-
         const messages = JSON.parse(localStorage.getItem('messages'));
-
         this.listChatHistory = messages.filter(x =>
           (x.senderId === this.user.id && x.receiverId === this.userChatWith.id) ||
           (x.senderId === this.userChatWith.id && x.receiverId === this.user.id)
         );
 
+        console.log(this.idParam, data.data.conversationId)
+        // check đã xem tin nhắn hay chưa
+        if (this.idParam === parseInt(data.data.conversationId)) {
+          console.log(this.idParam === data.data.conversationId);
+          this.signalRService.ReadMessage({
+            receiverId: this.userChatWith.id,
+            seen: true
+          })
+        }
         this.ngZone.run(() => { });
       }
     });
 
+    this.signalRService.OnReadMessage(data => {
+      this.listUserChat = this.listUserChat.map(item => {
+        if (item.id === data.data.receiverId) {
+          return {...item, seen: true}
+        }
+        return item;
+      })
+
+      console.log(this.listUserChat);
+    })
+
     this.signalRService.onReceiveNotificationMessage(data => {
       if (data.succeeded) this.toastNotification(`${data.data.content}`);
     });
+
 
     this.myName = `${this.user.lastName} ${this.user.firstName}`
   }
@@ -240,13 +266,16 @@ export class ChatComponent implements OnInit {
       receiverId: `${this.userChatWith.id}`,
       receiverName: `${this.userChatWith.lastName} ${this.userChatWith.firstName}`,
       content: this.inputChat,
-      timming: new Date()
+      timming: new Date(),
+      seen: false
     }
     // nếu người chat cùng offline thì chỉ lưu tin nhắn xuống localstorage
     // không bắn signalR để giảm lưu lượng kết nổi
     if(!this.userChatWith.isOnline) {
       this.listChatHistory = [...this.listChatHistory, mess]
-    } else this.signalRService.sendMessageChat(mess);
+    } else {
+      this.signalRService.sendMessageChat(mess);
+    } 
     this.inputChat = '';
   }
 
