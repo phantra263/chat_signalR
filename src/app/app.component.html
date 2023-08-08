@@ -1,62 +1,7 @@
-<nz-layout class="app-layout s2-hrm-layout">
-  <nz-sider class="menu-sidebar" nzTheme="light" nzCollapsible nzWidth="200px" nzBreakpoint="md"
-    [(nzCollapsed)]="isCollapsed" [nzTrigger]="null">
-    <div class="sidebar-logo">
-      <a href="/">
-        <img style="background-color: #108ee9" src="https://cryptologos.cc/logos/chatcoin-chat-logo.png" alt="logo">
-        <h1
-          style="margin-left: 10px; margin-top: -10px;font-family: 'Noto Sans JP', sans-serif; font-family: 'Pacifico', cursive; font-size:16px; letter-spacing: 1px; color: rgb(41, 39, 39);">
-          Chat
-          with me</h1>
-      </a>
-    </div>
+<ul nz-menu class="s2-userInfo-dropdown">
+  <li nz-menu-item *ngFor="let user of listUser" (click)="changeAccount(user)">
+    {{user.lastName}} {{ user.firstName }}
+  </li>
+</ul>
 
-    <ul class="menu-item" nz-menu nzMode="inline" [nzInlineCollapsed]="isCollapsed">
-      <li nz-menu-item routerLink="/chat" routerLinkActive="active">
-        <span nz-icon nzType="message"></span>
-        <span>Chat</span>
-      </li>
-    </ul>
-
-    <div class="s2-layout-footer" [ngClass]="isCollapsed ? 'collapse' : ''">
-      <span style="font-size: 12px;">Version: </span>
-      <span style="font-size: 12px;">{{version}}</span>
-    </div>
-  </nz-sider>
-
-  <nz-layout class="right-layout" [ngClass]="isCollapsed ? 'collapse' : ''">
-    <nz-header style="height: 55px; z-index: 20;" class="app-header">
-      <div class="s2-app-header" style="height: 55px;" [ngClass]="isCollapsed ? 'collapse' : ''">
-        <span class="header-trigger" (click)="isCollapsed = !isCollapsed">
-          <i class="trigger" nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"></i>
-        </span>
-
-        <div class="header-right">
-          <nz-avatar nzSize="large" nzIcon="user" nzSrc="user.avatar" nz-popover nzPopoverTrigger="click"
-            [nzPopoverContent]="popupInfomation" nzPopoverPlacement="bottomRight">
-          </nz-avatar>
-        </div>
-
-        <ng-template #popupInfomation>
-          <div>
-            <ul nz-menu class="s2-userInfo-dropdown">
-
-              <li nz-menu-item *ngFor="let user of listUser" (click)="changeAccount(user)">
-                {{user.lastName}} {{ user.firstName }}
-              </li>
-            </ul>
-          </div>
-        </ng-template>
-
-
-        <div class="s2-info-fullname">
-          <span class="s2-info-fullname-firstname">{{currUser.firstName}}</span><br />
-          <span class="s2-info-fullname-lastname">{{currUser.lastName}}</span>
-        </div>
-      </div>
-    </nz-header>
-    <nz-content style="padding-top: 42px;">
-      <router-outlet></router-outlet>
-    </nz-content>
-  </nz-layout>
-</nz-layout>
+<router-outlet></router-outlet>

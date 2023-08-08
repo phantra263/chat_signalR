@@ -1,9 +1,6 @@
 import { Component, OnInit, NgZone  } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { environment } from 'src/environments/environment';
-import { SignalRService } from './services/signalr.service';
-import { NotificationService } from './services/notification.service';
-import { NavigationExtras, Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -58,9 +55,7 @@ export class AppComponent implements OnInit {
       lastTimeMess: '2023-07-26T08:07:43.127'
     }
   ]
-  version: any = environment.infoApp.version;
 
-  langVisible: boolean = false;
   listData: any = [];
   isVisibleModal: boolean = false;
   tooltipVisible: boolean = false;

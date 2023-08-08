@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, HostListener, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, NgZone, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SignalRService } from 'src/app/services/signalr.service';
 import { v4 as uuidv4 } from 'uuid';
