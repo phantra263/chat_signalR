@@ -70,7 +70,7 @@
                   [ngClass]="myName === data.senderName ? 'my-message' : ''">
                   <figure>
                     <img [src]="myName === data.senderName ? user.avatar : userChatWith.avatar" alt=""
-                    *ngIf="(i === 0 || i > 0 && this.checkShowAvatar(listChatHistory[i - 1], data))">
+                    *ngIf="(i === 0 || i > 0 && checkShowAvatar(listChatHistory[i - 1], data))">
                   </figure>
              
                   <p class="message">

@@ -1,6 +1,7 @@
 import { Component, OnInit, NgZone, HostListener, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SignalRService } from 'src/app/services/signalr.service';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-chat',
@@ -126,13 +127,14 @@ export class ChatComponent implements OnInit {
       this.idParam = parseInt(params['id']);
 
       if (this.idParam) {
-        this.getMessage();
-
-        // gửi event lên server check đã xem
-        // this.signalRService.ReadMessage({
-        //   receiverId: this.userChatWith.id,
-        //   seen: true
-        // })
+        const conversation = this.listConversary.find(item => this.idParam === item.id);
+        const receiverId = conversation.user1 !== this.user.id ? conversation.user1 : conversation.user2;
+        this.userChatWith = this.listUserChat.find(item => item.id === receiverId);
+        const messages = JSON.parse(localStorage.getItem('messages')) || [];
+        this.listChatHistory = messages.filter(x =>
+          (x.senderId === this.user.id && x.receiverId === this.userChatWith.id) ||
+          (x.senderId === this.userChatWith.id && x.receiverId === this.user.id)
+        );
 
         this.hasConversation = true;
         this.ngZone.run(() => { });
@@ -169,7 +171,6 @@ export class ChatComponent implements OnInit {
     });
 
     this.signalRService.onDisconnected(data => {
-      console.log(data)
       if (data.succeeded) {
         this.listUserChat = this.listUserChat.map((item) => {
           if (item.id === data.data.userId) {
@@ -192,36 +193,25 @@ export class ChatComponent implements OnInit {
 
     this.signalRService.onReceiveMessage(data => {
       if (data.succeeded) {
-        localStorage.setItem("messages", JSON.stringify([...this.listChatHistory, data.data]));
-        const messages = JSON.parse(localStorage.getItem('messages'));
+        let messages = JSON.parse(localStorage.getItem('messages')) || [];
+
+        const findObj = messages.find(obj => obj.id === data.data.id);
+        if (!findObj) {
+          messages = [...messages, data.data]
+        }
+        
+        localStorage.setItem("messages", JSON.stringify(messages));
+
         this.listChatHistory = messages.filter(x =>
           (x.senderId === this.user.id && x.receiverId === this.userChatWith.id) ||
           (x.senderId === this.userChatWith.id && x.receiverId === this.user.id)
         );
 
-        console.log(this.idParam, data.data.conversationId)
-        // check đã xem tin nhắn hay chưa
-        if (this.idParam === parseInt(data.data.conversationId)) {
-          console.log(this.idParam === data.data.conversationId);
-          this.signalRService.ReadMessage({
-            receiverId: this.userChatWith.id,
-            seen: true
-          })
-        }
+
+
         this.ngZone.run(() => { });
       }
     });
-
-    this.signalRService.OnReadMessage(data => {
-      this.listUserChat = this.listUserChat.map(item => {
-        if (item.id === data.data.receiverId) {
-          return {...item, seen: true}
-        }
-        return item;
-      })
-
-      console.log(this.listUserChat);
-    })
 
     this.signalRService.onReceiveNotificationMessage(data => {
       if (data.succeeded) this.toastNotification(`${data.data.content}`);
@@ -229,18 +219,6 @@ export class ChatComponent implements OnInit {
 
 
     this.myName = `${this.user.lastName} ${this.user.firstName}`
-  }
-
-  getMessage() {
-    const conversation = this.listConversary.find(item => this.idParam === item.id);
-    const receiverId = conversation.user1 !== this.user.id ? conversation.user1 : conversation.user2;
-    this.userChatWith = this.listUserChat.find(item => item.id === receiverId);
-    const messages = JSON.parse(localStorage.getItem('messages')) || [];
-
-    this.listChatHistory = messages.filter(x =>
-      (x.senderId === this.user.id && x.receiverId === this.userChatWith.id) ||
-      (x.senderId === this.userChatWith.id && x.receiverId === this.user.id)
-    );
   }
 
   ngAfterViewChecked() {
@@ -255,11 +233,12 @@ export class ChatComponent implements OnInit {
 
   onEnterKeyPressed(event): void {
     event.preventDefault();
-    this.sendMess();
+    if (this.inputChat) { this.sendMess();}
   }
 
   sendMess() {
     const mess = {
+      id: uuidv4(),
       senderId: this.user.id,
       conversationId: `${this.idParam}`,
       senderName: this.myName,
@@ -269,6 +248,7 @@ export class ChatComponent implements OnInit {
       timming: new Date(),
       seen: false
     }
+
     // nếu người chat cùng offline thì chỉ lưu tin nhắn xuống localstorage
     // không bắn signalR để giảm lưu lượng kết nổi
     if(!this.userChatWith.isOnline) {
