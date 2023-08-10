@@ -1,7 +1,19 @@
-<ul nz-menu class="s2-userInfo-dropdown">
-  <li nz-menu-item *ngFor="let user of listUser" (click)="changeAccount(user)">
-    {{user.lastName}} {{ user.firstName }}
-  </li>
-</ul>
+<main *ngIf="currUser">
+  <div class="side-bar">
+    <div class="avatar">
+      <img src="https://i.imgur.com/244QDmq.png" alt="">
+    </div>
+    <ul class="menu">
+      <li><img src="../assets/images/icon-mess.png" alt="icon"></li>
+      <li><img src="../assets/images/icon-bell.png" alt="icon"></li>
+      <li><img src="../assets/images/icon-setting.png" alt="icon"></li>
+    </ul>
+    <img src="../assets/images/icon-logout.png" alt="icon" class="icon-logout">
+  </div>
 
-<router-outlet></router-outlet>
+  <div class="w-container">
+    <router-outlet></router-outlet>
+  </div>
+</main>
+
+<app-form *ngIf="!currUser"></app-form>

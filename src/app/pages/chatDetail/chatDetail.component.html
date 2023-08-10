@@ -1,0 +1,56 @@
+<div class="wrap-content">
+  <div class="header">
+    <div class="user">
+      <img src="https://i.imgur.com/244QDmq.png" alt="avatar">
+      <div class="infor">
+        <h5>Anil</h5>
+        <p>Online - Last seen, 2.02pm</p>
+      </div>
+    </div>
+    <div class="control">
+      <img src="./assets/images/icon-phone.png" alt="">
+      <img src="./assets/images/icon-videocall.png" alt="">
+    </div>
+  </div>
+  <div class="chat-history">
+    <ul>
+      <li>
+        <div class="wrap-message">
+          <figure>
+            <img src="https://i.imgur.com/244QDmq.png" alt="">
+          </figure>
+          <p class="message">
+            hello
+          </p>
+          <span class="message-data-time">11:00</span>
+        </div>
+      </li>
+      <li>
+        <div class="wrap-message my-message">
+          <figure>
+            <img src="https://i.imgur.com/244QDmq.png" alt="">
+          </figure>
+          <p class="message">
+            hello
+          </p>
+          <span class="message-data-time">11:00</span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div class="wrap-input-chat">
+    <div class="input-chat">
+      <textarea [(ngModel)]="inputChat" rows="2"></textarea>
+      <span class="pick-emoji"
+        (click)="toggled = !toggled"
+        [(emojiPickerIf)]="toggled"
+        [emojiPickerDirection]="'left'"
+        (emojiPickerSelect)="handleSelection($event)">
+        <img src="./assets/images/icon-face.png" alt="">
+      </span>
+    </div>
+    <button [disabled]="!inputChat.trim() ? true : false">
+      Send
+    </button>
+  </div>
+</div>

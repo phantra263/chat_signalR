@@ -1,0 +1,166 @@
+.wrap-chat {
+  display: flex;
+  height: calc(100vh - 20px);
+  .side-bar-chat {
+    width: 385px;
+    margin: 0 20px;
+    .search {
+      padding: 15px 15px 15px 47px;
+      position: relative;
+      border-radius: 25px;
+      background: #fff;
+      box-shadow: 0px 4px 5px 2px rgba(121, 197, 239, 0.38);
+      margin-bottom: 15px;
+      img {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 24px;
+      }
+      input {
+        width: 100%;
+        color: #65676b;
+      }
+      .search-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        height: 300px;
+        overflow-y: auto;
+        background: #fff;
+        z-index: 10;
+        box-shadow: 0px 4px 5px 2px rgba(121, 197, 239, 0.38);
+        ul {
+          li {
+            padding: 15px 20px;
+            cursor: pointer;
+            &:hover {
+              background-color: #eee;
+            }
+          }
+        }
+      }
+    }
+    .panel {
+      padding: 10px;
+      background: #fff;
+      border-radius: 25px;
+      box-shadow: 0px 4px 5px 2px rgba(121, 197, 239, 0.38);
+      margin-bottom: 22px;
+      h1 {
+        font-size: 20px;
+        font-weight: bold;
+        color: #303030;
+        padding: 10px 10px;
+      }
+      .list-chat {
+        li {
+          display: flex;
+          align-items: center;
+          cursor: pointer;
+          padding: 10px 5px;
+          position: relative;
+          border-bottom: 1px solid #eee;
+          &:hover {
+            background-color: #eee;
+          }
+          &.active {
+            background: #eaf3ff;
+          }
+          .wrap-avartar {
+            position: relative;
+            margin-right: 20px;
+            .online {
+              position: absolute;
+              content: '';
+              width: 12px;
+              height: 12px;
+              border-radius: 50%;
+              background: green;
+              border: 2px solid #fff;
+              bottom: 0;
+              right: 1px;
+            }
+            img {
+              width: 35px;
+              height: 35px;
+              border-radius: 50%;
+              overflow: hidden;
+              object-fit: cover;
+              flex-shrink: 0;
+            }
+          }
+          .infor {
+            flex: 1;
+            h5 {
+              font-size: 16px;
+              font-weight: bold;
+              margin-bottom: 4px;
+              color: #303030;
+            }
+            .last-mess {
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              color: #7C7C7C;
+              p {
+                margin-bottom: 0;
+                font-size: 12px;
+                margin-bottom: 0;
+                display: -webkit-box;
+                -webkit-line-clamp: 1;
+                -webkit-box-orient: vertical;  
+                overflow: hidden;
+              }
+              time {
+                font-size: 12px;
+                color: #65676b;
+                white-space: nowrap;
+              }
+            }
+          }
+          .mark {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 9px;
+            top: 15px;
+            right: 0;
+          }
+        }
+      }
+    }
+    .list-groups {
+      ul {
+        max-height: calc(100vh - 73vh);
+        overflow-y: scroll;
+      }
+    }
+    .list-users {
+      margin-bottom: 0;
+      ul {
+        max-height: calc(100vh - 65vh);
+        overflow-y: scroll;
+      }
+    }
+  }
+  .content-chat {
+    flex: 1;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0px 4px 5px 2px rgba(121, 197, 239, 0.38);
+    position: relative;
+    .empty {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;
+      color: #65676b;
+      font-size: 22px;
+      text-align: center;
+    }
+  }
+}

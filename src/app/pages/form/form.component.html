@@ -1,0 +1,23 @@
+<div class="wrap-modal">
+  <img src="https://github.githubassets.com/images/modules/site/home/hero-glow.svg" alt="Glowing universe" class="js-warp-hide position-absolute overflow-hidden home-hero-glow events-none">
+
+  <div class="modal">
+    <h1>Welcome to Chat!<br>let's start an anonymous chat...</h1>
+    <label for="nickName">Enter your nickname*</label>
+    <div class="input">
+      <span>→</span>
+      <input type="text" id="nickName" [(ngModel)]="nickName" (keydown.enter)="onEnterKeyPressed($event)">
+      <button (click)="login()" [disabled]="!nickName">Continute</button>
+    </div>
+    <p *ngIf="err" class="err">{{err}}</p>
+  </div>
+
+  <div class="signup-space">
+    <div class="signup-stars"></div>
+    <div class="signup-stars"></div>
+    <div class="signup-stars"></div>
+    <div class="signup-stars"></div>
+    <div class="signup-stars"></div>
+    <div class="signup-stars"></div>
+  </div>
+</div>
