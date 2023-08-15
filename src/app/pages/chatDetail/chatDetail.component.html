@@ -1,10 +1,12 @@
-<div class="wrap-content">
+<div class="wrap-content" *ngIf="idParam && userChatWith">
   <div class="header">
     <div class="user">
-      <img src="https://i.imgur.com/244QDmq.png" alt="avatar">
+      <div class="avatar" [ngStyle]="{'background-color' : userChatWith.AvatarBgColor}">
+        {{userChatWith.Nickname[0]}}
+      </div>
       <div class="infor">
-        <h5>Anil</h5>
-        <p>Online - Last seen, 2.02pm</p>
+        <h5>{{userChatWith.Nickname}}</h5>
+        <p>Online</p>
       </div>
     </div>
     <div class="control">
@@ -13,34 +15,34 @@
     </div>
   </div>
   <div class="chat-history">
+    <div class="mess-empty" *ngIf="listMessage.length === 0">
+      <div class="avatar" [ngStyle]="{'background-color' : userChatWith.AvatarBgColor}">
+        {{userChatWith.Nickname[0]}}
+      </div>
+      <h3>
+        {{userChatWith.Nickname}}
+      </h3>
+      <p>Hãy bắt đầu nhắn tin với <span style="font-weight: bold;">{{userChatWith.Nickname}}</span> nào!</p>
+    </div>
+
     <ul>
-      <li>
-        <div class="wrap-message">
-          <figure>
-            <img src="https://i.imgur.com/244QDmq.png" alt="">
+      <li *ngFor="let data of listMessage; let i = index" [ngClass]="!(i > 0 && this.checkShowAvatar(listMessage[i - 1], data)) ? 'mt-0' : ''">
+        <div class="wrap-message" 
+        [ngClass]="currUser.Id === data.SenderId ? 'my-message' : ''">
+          <figure *ngIf="currUser.Id !== data.SenderId" [ngStyle]="{'background-color' : userChatWith.AvatarBgColor}" [title]="userChatWith.Nickname">
+            {{userChatWith.Nickname[0]}}
           </figure>
           <p class="message">
-            hello
+            {{data.Content}}
           </p>
-          <span class="message-data-time">11:00</span>
-        </div>
-      </li>
-      <li>
-        <div class="wrap-message my-message">
-          <figure>
-            <img src="https://i.imgur.com/244QDmq.png" alt="">
-          </figure>
-          <p class="message">
-            hello
-          </p>
-          <span class="message-data-time">11:00</span>
+          <span class="message-data-time">{{ data.Created | TimeMessFormat }}</span>
         </div>
       </li>
     </ul>
   </div>
   <div class="wrap-input-chat">
     <div class="input-chat">
-      <textarea [(ngModel)]="inputChat" rows="2"></textarea>
+      <textarea [(ngModel)]="inputChat" rows="1"></textarea>
       <span class="pick-emoji"
         (click)="toggled = !toggled"
         [(emojiPickerIf)]="toggled"
@@ -54,3 +56,7 @@
     </button>
   </div>
 </div>
+
+<!-- <div *ngIf="isLoading" class="loading-overlay">
+  <div class="loading-spinner"></div>
+</div> -->

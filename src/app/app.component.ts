@@ -1,4 +1,5 @@
-import { Component, OnInit, NgZone  } from '@angular/core';
+import { Component, OnInit, NgZone, Renderer2  } from '@angular/core';
+import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -7,9 +8,17 @@ import { Component, OnInit, NgZone  } from '@angular/core';
 })
 
 export class AppComponent implements OnInit {
-  currUser :any = sessionStorage.getItem('account') || null;
-  constructor() {}
+  currUser :any = localStorage.getItem('account') || null;
+  constructor(
+    private router: Router
+  ) {}
 
   ngOnInit() {
+    this.currUser = JSON.parse(this.currUser);
+  }
+
+  logout() {
+    localStorage.clear();
+    window.location.reload();   
   }
 }

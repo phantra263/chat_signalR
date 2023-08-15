@@ -11,8 +11,8 @@ export class SignalRService {
   private hubConnection: signalR.HubConnection;
   public notiReceived: Subject<string> = new Subject<string>();
   public listNoti: string[] = [];
-  private apiUrl = 'https://www.signalr-test.somee.com';
-  // private apiUrl = 'http://192.168.2.173';
+  // private apiUrl = 'https://www.signalr-test.somee.com';
+  private apiUrl = 'http://192.168.2.173';
 
   startConnectChat(id: string): void {
     this.hubConnection = new signalR.HubConnectionBuilder()

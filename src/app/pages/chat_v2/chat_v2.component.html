@@ -1,11 +1,18 @@
 <div class="wrap-chat">
-  <div class="side-bar-chat">
+  <div class="side-bar-chat" [ngClass]="idParam ? 'hidden-sp' : 'w-100'">
     <div class="search">
       <img src="./assets/images/icon-search.png" alt="">
-      <input type="text" placeholder="search" [(ngModel)]="inputSearch" (keyup)="search()" (focusout)="onInputFocusOut($event)">
+      <input #searchInput type="text" placeholder="search" 
+            [(ngModel)]="inputSearch" 
+            (keyup)="search()" 
+            (keydown)="onKeyDown($event)" 
+            (click)="openTooltipSearch()">
       <div class="search-dropdown" *ngIf="showSearch && listSearch.length > 0">
         <ul>
-          <li *ngFor="let data of listSearch" (click)="startChat(data)">
+          <li *ngFor="let data of listSearch; let i = index" 
+          (click)="confirmSearch(data)" 
+          [class.active]="selectedIndex === i">
+            <div class="avatar" [ngStyle]="{'background-color' : data.AvatarBgColor}">{{data.Nickname[0]}}</div>
             {{data.Nickname}}
           </li>
         </ul>
@@ -15,9 +22,9 @@
     <div class="list-groups panel">
       <h1>Groups</h1>
       <ul class="list-chat">
-        <li *ngFor="let data of [1,2,3,4]">
+        <li *ngFor="let data of [1, 2, 3]">
           <div class="wrap-avartar">
-            <img src="https://i.imgur.com/244QDmq.png" alt="">
+            T
             <span class="online"></span>
           </div>
 
@@ -36,29 +43,28 @@
     <div class="list-users panel">
       <h1>Peoples</h1>
       <ul class="list-chat">
-        <li *ngFor="let data of [1,2,3,4,5]">
-          <div class="wrap-avartar">
-            <img src="https://i.imgur.com/244QDmq.png" alt="">
-            <span class="online"></span>
-          </div>
+        <li *ngFor="let data of listUserChat" (click)="startChat(data)" [ngClass]="data.ConversationId === idParam ? 'active' : ''">
+          <div class="wrap-avartar" [ngStyle]="{'background-color' : data.AvatarBgColor}">
+            {{ data.Nickname[0] }}
+            <span class="online" *ngIf="data.IsOnline"></span>
+          </div>  
           <div class="infor">
-            <h5>Anil</h5>
+            <h5>{{data.Nickname}}</h5>
             <div class="last-mess">
-              <p>April fool’s day</p>
-              <time>11:00</time>
+              <p>{{data.Content}}</p>
+              <time>{{data.Created | timeAgo}}</time>
             </div>
           </div>
-          <span class="mark"><img src="./assets/images/icon-seen.png" alt=""></span>
+          <span class="mark" *ngIf="data.IsSeen"><img src="./assets/images/icon-seen.png" alt=""></span>
         </li>
       </ul>
     </div>
   </div>
 
-  <div class="content-chat">
-    <router-outlet *ngIf="hasId; else noUserId"></router-outlet>
+  <div class="content-chat" [ngClass]="!idParam ? 'hidden-sp' : ''">
+    <app-chatDetail *ngIf="idParam; else noUserId"></app-chatDetail>
     <ng-template #noUserId>
       <p class="empty">Hãy chọn một đoạn chat hoặc bắt đầu cuộc trò chuyện mới</p>
     </ng-template>
   </div>
-
 </div>

@@ -4,6 +4,7 @@
   height: 100vh;
   overflow: hidden;
   background-color: #040d21;
+  perspective: 1000px;
   .modal {
     position: absolute;
     top: 50%;
@@ -15,16 +16,44 @@
     border-radius: 6px;
     width: 500px;
     z-index: 2;
+    transform-style: preserve-3d;
+    transition: transform 0.6s;
+    &.flag {
+      transform: translate(-50%, -50%) rotateY(360deg);
+    }
     h1 {
       color: #8193b2;
       font-family: ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace;
       margin-bottom: 20px;
+      animation: type 5s steps(60, end) infinite; 
+      overflow: hidden;
+      width: 100%;
+      white-space: nowrap;
     }
     label {
       color: #00cfc8;
       margin-bottom: 10px;
       display: inline-block;
       font-family: ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace;
+    }
+    .list-color {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+      input {
+        display: none;
+      }
+      label {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #fff;
+        margin: 0 5px;
+        cursor: pointer;
+        &.active {
+          outline: #fff solid 3px;
+        }
+      }
     }
     .input {
       display: flex;
@@ -38,13 +67,23 @@
         border-radius: 6px;
         margin-right: 3px;
         padding: 5px 12px;
-        border: 1px solid #8193b2;
+        border: 1px solid #035af0;
         flex: 1;
         background-color: #0c162d;
-        -webkit-text-fill-color: #fff;
         color: #fff;
         font-family: ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace;
       }
+    }
+    .err {
+      color: #ca3939;
+      font-size: 13px;
+      padding-left: 23px;
+      margin: 10px auto;
+    }
+    .form-control {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       button {
         color: #627597;
         background: none;
@@ -58,12 +97,19 @@
           opacity: 0.1;
           cursor: not-allowed;
         }
+        &.btn-left {
+          font-weight: bold;
+          background: linear-gradient(to right, #30CFD0 0%, #330867 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          transition:all 1s;
+          &:hover {
+            background: linear-gradient(to right, #330867 0%, #30CFD0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+          }
+        }
       }
-    }
-    .err {
-      color: #ca3939;
-      font-size: 13px;
-      padding-left: 23px;
     }
   }
 }
@@ -120,6 +166,10 @@
   height: 200%;
   object-fit: cover;
   transform: translate(-50%, -50%);
+}
+
+@keyframes type{ 
+  from { width: 0; } 
 }
 
 @keyframes zoom {

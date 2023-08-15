@@ -1,14 +1,14 @@
 <main *ngIf="currUser">
   <div class="side-bar">
-    <div class="avatar">
-      <img src="https://i.imgur.com/244QDmq.png" alt="">
+    <div class="avatar" [ngStyle]="{'background-color' : currUser.AvatarBgColor}" [title]="currUser.Nickname">
+      {{currUser.Nickname[0]}}
     </div>
     <ul class="menu">
-      <li><img src="../assets/images/icon-mess.png" alt="icon"></li>
+      <li routerLink="/chat" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }" ><img src="../assets/images/icon-mess.png" alt="icon"></li>
       <li><img src="../assets/images/icon-bell.png" alt="icon"></li>
       <li><img src="../assets/images/icon-setting.png" alt="icon"></li>
     </ul>
-    <img src="../assets/images/icon-logout.png" alt="icon" class="icon-logout">
+    <img src="../assets/images/icon-logout.png" alt="icon" class="icon-logout" (click)="logout()" title="logout">
   </div>
 
   <div class="w-container">

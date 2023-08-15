@@ -9,7 +9,7 @@ import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SignalRService } from './services/signalr.service';
 import { NgxEmojiPickerModule } from 'ngx-emoji-picker';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule  } from '@angular/forms';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TimeAgoPipe } from './pipes/time-ago.pipe';
 import { ChatComponent } from './pages/chat/chat.component';
@@ -18,6 +18,8 @@ import { TimeMessFormatPipe } from './pipes/time-mess.pipe';
 import { Chat_v2Component } from './pages/chat_v2/chat_v2.component';
 import { ChatDetailComponent } from './pages/chatDetail/chatDetail.component';
 import { FormComponent } from './pages/form/form.component';
+import { CommonService } from './services/common.service';
+import { PageNotFoundComponent } from './pages/pageNotFound/pageNotFound.component';
 
 
 registerLocaleData(en);
@@ -35,7 +37,8 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     ChatComponent,
     Chat_v2Component,
     ChatDetailComponent,
-    FormComponent
+    FormComponent,
+    PageNotFoundComponent
   ],
   imports: [
     BrowserModule,
@@ -43,13 +46,15 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     HttpClientModule,
     BrowserAnimationsModule,
     FormsModule,
+    ReactiveFormsModule,
     NgxEmojiPickerModule,
 
     HttpClientModule
   ],
   providers: [
     SignalRService,
-    ChatService
+    ChatService,
+    CommonService
   ],
   bootstrap: [AppComponent],
   entryComponents: []
