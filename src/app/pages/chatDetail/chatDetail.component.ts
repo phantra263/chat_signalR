@@ -1,55 +1,103 @@
-import { Component, Input, OnInit, Renderer2  } from '@angular/core';
+import { Component, ViewChild, Input, OnInit, NgZone, ElementRef, Renderer2, SimpleChanges, OnChanges } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ChatService } from 'src/app/services/chat.service';
+import { SignalRService } from 'src/app/services/signalr.service';
 
 @Component({
   selector: 'app-chatDetail',
   templateUrl: './chatDetail.component.html',
   styleUrls: ['./chatDetail.component.scss']
 })
-export class ChatDetailComponent implements OnInit {
-  userChatWith: any;
+export class ChatDetailComponent implements OnInit,OnChanges {
+  @ViewChild('messageContainer') private messageContainerRef: ElementRef;
+  @Input() idParam: string = '';
+  @Input() currUser: any;
+  @Input() status: boolean = false;
+
+  userChatWith: any = null;
   inputChat: string = '';
   toggled: boolean = false;
-  idParam: string = '';
-  currUser :any = localStorage.getItem('account');
   listMessage: any = [];
   filterParam: any = {
     UserId: '',
     ConversationId: '',
     PageNumber: 1,
-    PageSize: 10
+    PageSize: 9999
   }
+  resp: any;
+  isLoading: boolean = true;
 
   constructor(
     private route: ActivatedRoute,
     private ChatSrv: ChatService,
+    private signalRService: SignalRService,
+    private ngZone: NgZone
     ) { }
 
   ngOnInit() {
-    this.currUser = JSON.parse(this.currUser);
-    this.route.paramMap.subscribe(params => {
-      this.idParam = params.get('id');
+    this.signalRService.onReceiveMessage((data) => {
+      if (data.conversationId === this.idParam) {
+        this.listMessage.push(data);
+        
+        if (this.currUser.Id !== data.senderId) {
+          const obj = {
+            Id: data.id,
+            ConversationId: '',
+            IsSeen: true
+          } 
+          this.signalRService.ReadMessage(obj);
+        }
+        this.ngZone.run(() => { });
+      }
+    })
+
+    this.signalRService.onConnected(data => {
+      if (data.succeeded) {
+        this.userChatWith.IsOnline = data.data.isOnline
+        this.ngZone.run(() => { });
+      }
+    });
+    this.signalRService.onDisconnected(data => {
+      if (data.succeeded) {
+        this.userChatWith.IsOnline = data.data.isOnline
+        this.ngZone.run(() => { });
+      }
+    });
+  }
+
+
+  async ngOnChanges(changes: SimpleChanges) {
+    if (changes.idParam) {
       this.filterParam = {
         ...this.filterParam,
         UserId: this.currUser.Id,
         ConversationId: this.idParam
       }
-      this.ChatSrv.Messages(this.filterParam).subscribe((resp: any) => {
-        if (resp.Succeeded) {
-          this.listMessage = resp.Data.Messages
-          this.userChatWith = {
-            ...this.userChatWith,
-            AvatarBgColor: resp.Data.AvatarBgColor,
-            Nickname: resp.Data.Nickname,
-            Id: resp.Data.Id,
-            IsOnline: resp.Data.IsOnline
-          }
+    this.ChatSrv.Messages(this.filterParam).toPromise().then((resp: any) => {
+      if (resp.Succeeded) {
+        this.listMessage = resp.Data.Messages;
+        this.userChatWith = {
+          AvatarBgColor: resp.Data.AvatarBgColor,
+          Nickname: resp.Data.Nickname,
+          Id: resp.Data.Id,
+          IsOnline: resp.Data.IsOnline
         }
+      }
+      this.isLoading = false;
       })
-
-    });
+    }
   }
+
+  ngAfterViewChecked() {
+    this.scrollMessageContainerToBottom();
+  }
+
+  private scrollMessageContainerToBottom() {
+    try {
+      this.messageContainerRef.nativeElement.scrollTop = this.messageContainerRef.nativeElement.scrollHeight;
+    } catch (err) { }
+  }
+
   handleSelection(event) {
     this.inputChat += event.char;
   }
@@ -62,8 +110,23 @@ export class ChatDetailComponent implements OnInit {
     return diffInMinutes >= 10 && parseTime1.toDateString() === parseTime2.toDateString();;
   }
   checkShowAvatar(objCurrent, objPre) {
-    return (objCurrent.senderName !== objPre.senderName
-      || (objCurrent.senderName === objPre.senderName && this.checkTime(objCurrent.timming, objPre.timming)))
+    return (objCurrent.senderId !== objPre.senderId
+      || (objCurrent.senderId === objPre.senderId && this.checkTime(objCurrent.created, objPre.created)))
+  }
+  onEnterKeyPressed(event): void {
+    event.preventDefault();
+    if (this.inputChat) { this.sendMess();}
   }
 
+  sendMess() {
+    const mess = {
+      ConversationId: this.idParam,
+      SenderName: this.currUser.Nickname,
+      ReceiverId: this.userChatWith.Id,
+      ReceiverName: this.userChatWith.Nickname,
+      Content: this.inputChat
+    }
+    this.signalRService.sendMessageChat(mess);
+    this.inputChat = '';
+  }
 }

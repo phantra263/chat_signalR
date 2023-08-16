@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, NgZone, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ChatService } from 'src/app/services/chat.service';
 import { SignalRService } from 'src/app/services/signalr.service';
@@ -34,32 +34,89 @@ export class Chat_v2Component implements OnInit {
     private signalRService: SignalRService,
     private http: HttpClient,
     private renderer: Renderer2,
+    private ngZone: NgZone
     ) {}
 
   ngOnInit() {
+    // show toast notify window
+    if ('Notification' in window) {
+      if (Notification.permission !== 'granted') {
+        // cấp quyền hiển thị thông báo trên window
+        Notification.requestPermission().then(permission => {
+          if (permission === 'granted') {
+            // window được cấp quyền hiển thị thông báo
+          } else {
+            // window không được cấp quyền hiển thị thông báo
+          }
+        });
+      } else {
+        // đã cấp quyền trước đó
+      }
+    }
 
     this.currUser = JSON.parse(this.currUser);
     // fetch list user chat with
     const params = {
       UserId: this.currUser.Id,
       PageNumber: 1,
-      PageSize: 10
+      PageSize: 9999
     }
     this.fetchListUser(params);
 
-    this.route.paramMap.subscribe((params: any) => {
-      this.idParam = params.get('id');
+    this.route.queryParamMap.subscribe((queryParam: any) => {
+      this.idParam = queryParam.get('id');
     });
-
 
     // connect signalR
     this.signalRService.startConnectChat(this.currUser.Id);
     this.signalRService.onConnected(data => {
-      console.log('on', data);
+      if (data.succeeded) {
+        this.changeStatus(data);
+        this.ngZone.run(() => { });
+      }
     });
     this.signalRService.onDisconnected(data => {
-      console.log('dis', data)
+      if (data.succeeded) {
+        this.changeStatus(data);
+        this.ngZone.run(() => { });
+      }
     });
+    this.signalRService.onReceiveMessage((data) => {
+      this.listUserChat = this.listUserChat.map((item) => {
+        if (data.conversationId === item.ConversationId) {
+          item = {
+            ...item,
+            Content: data.content,
+            IsSeen: false,
+            Created: data.created
+          }
+        }
+        return item;
+      })
+      this.ngZone.run(() => { });
+    })
+
+    this.signalRService.OnReadMessage((data) => {
+      const conversary = this.listUserChat.find(item => item.ConversationId === data.conversationId);
+      if (conversary) conversary.IsSeen = true;
+      this.ngZone.run(() => { });
+    })
+
+    this.signalRService.onReceiveNotificationMessage(data => {
+      if (data.succeeded) this.toastNotification(`${data.data.content}`);
+    });
+  }
+
+   changeStatus(data) {
+      this.listUserChat = this.listUserChat.map((item) => {
+        if (item.UserId === data.data.userId) {
+          item = {
+            ...item,
+            IsOnline: data.data.isOnline
+          }
+        }
+        return item
+      })
   }
 
   fetchListUser(param: any) {
@@ -103,7 +160,11 @@ export class Chat_v2Component implements OnInit {
         }
         this.hasId = true;
         this.userChatWith = data;
-        this.router.navigate(['/chat', resp.Data.ConversationId]);
+        // this.router.navigate(['/chat', resp.Data.ConversationId]);
+        this.router.navigate([], { queryParams: { id: resp.Data.ConversationId }, queryParamsHandling: 'merge' });
+        
+        // read message
+        this.readMessage();
       }
     })
 
@@ -112,9 +173,21 @@ export class Chat_v2Component implements OnInit {
     this.showSearch = false;
     this.inputSearch = '';
   }
+  readMessage() {
+    const obj = {
+      Id: '',
+      ConversationId: this.userChatWith.ConversationId,
+      IsSeen: true
+    }
+    this.signalRService.ReadMessage(obj);
+  }
   startChat(data) {
     this.userChatWith = data;
-    this.router.navigate(['/chat', data.ConversationId]);
+    // this.router.navigate(['/chat', data.ConversationId]);
+
+    // read message
+    this.readMessage();
+    this.router.navigate([], { queryParams: { id: data.ConversationId }, queryParamsHandling: 'merge' });
     this.hasId = true;
   }
   openTooltipSearch() {
@@ -141,5 +214,13 @@ export class Chat_v2Component implements OnInit {
     //     }
     //   }
     // }
+  }
+  toastNotification(content) {
+    const title = 'Messenger';
+    const options: NotificationOptions = {
+      body: `${content}`
+    };
+
+    const notification = new Notification(title, options);
   }
 }

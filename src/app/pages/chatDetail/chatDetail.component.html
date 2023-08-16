@@ -1,4 +1,4 @@
-<div class="wrap-content" *ngIf="idParam && userChatWith">
+<div class="wrap-content" *ngIf="userChatWith">
   <div class="header">
     <div class="user">
       <div class="avatar" [ngStyle]="{'background-color' : userChatWith.AvatarBgColor}">
@@ -6,7 +6,7 @@
       </div>
       <div class="infor">
         <h5>{{userChatWith.Nickname}}</h5>
-        <p>Online</p>
+        <p>{{userChatWith.IsOnline ? 'Online' : 'Offline'}}</p>
       </div>
     </div>
     <div class="control">
@@ -14,7 +14,7 @@
       <img src="./assets/images/icon-videocall.png" alt="">
     </div>
   </div>
-  <div class="chat-history">
+  <div class="chat-history" #messageContainer>
     <div class="mess-empty" *ngIf="listMessage.length === 0">
       <div class="avatar" [ngStyle]="{'background-color' : userChatWith.AvatarBgColor}">
         {{userChatWith.Nickname[0]}}
@@ -28,21 +28,23 @@
     <ul>
       <li *ngFor="let data of listMessage; let i = index" [ngClass]="!(i > 0 && this.checkShowAvatar(listMessage[i - 1], data)) ? 'mt-0' : ''">
         <div class="wrap-message" 
-        [ngClass]="currUser.Id === data.SenderId ? 'my-message' : ''">
-          <figure *ngIf="currUser.Id !== data.SenderId" [ngStyle]="{'background-color' : userChatWith.AvatarBgColor}" [title]="userChatWith.Nickname">
+        [ngClass]="currUser.Id === data.senderId ? 'my-message' : ''">
+          <figure *ngIf="currUser.Id !== data.senderId" 
+            [ngClass]="(i === 0 || i > 0 && checkShowAvatar(listMessage[i - 1], data)) ? '' : 'hidden'"
+          [ngStyle]="{'background-color' : userChatWith.AvatarBgColor}" [title]="userChatWith.Nickname">
             {{userChatWith.Nickname[0]}}
           </figure>
           <p class="message">
-            {{data.Content}}
+            {{data.content}}
           </p>
-          <span class="message-data-time">{{ data.Created | TimeMessFormat }}</span>
+          <span class="message-data-time">{{ data.created | TimeMessFormat }}</span>
         </div>
       </li>
     </ul>
   </div>
   <div class="wrap-input-chat">
     <div class="input-chat">
-      <textarea [(ngModel)]="inputChat" rows="1"></textarea>
+      <textarea [(ngModel)]="inputChat" rows="1" (keydown.enter)="onEnterKeyPressed($event)"></textarea>
       <span class="pick-emoji"
         (click)="toggled = !toggled"
         [(emojiPickerIf)]="toggled"
@@ -51,12 +53,12 @@
         <img src="./assets/images/icon-face.png" alt="">
       </span>
     </div>
-    <button [disabled]="!inputChat.trim() ? true : false">
+    <button [disabled]="!inputChat.trim() ? true : false" (click)="sendMess()">
       Send
     </button>
   </div>
 </div>
 
-<!-- <div *ngIf="isLoading" class="loading-overlay">
+<div *ngIf="isLoading" class="loading-overlay">
   <div class="loading-spinner"></div>
-</div> -->
+</div>

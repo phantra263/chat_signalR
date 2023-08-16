@@ -52,19 +52,21 @@
             <h5>{{data.Nickname}}</h5>
             <div class="last-mess">
               <p>{{data.Content}}</p>
-              <time>{{data.Created | timeAgo}}</time>
+              <time *ngIf="data.Created">{{data.Created | timeAgo}}</time>
             </div>
           </div>
-          <span class="mark" *ngIf="data.IsSeen"><img src="./assets/images/icon-seen.png" alt=""></span>
+          <span class="mark" *ngIf="data.Content">
+            <img src="./assets/images/icon-seen.png" alt="" *ngIf="data.IsSeen">
+            <img src="./assets/images/mess-not-seen.png" alt="" *ngIf="!data.IsSeen && data.ConversationId !== idParam">
+          </span>
         </li>
       </ul>
     </div>
   </div>
 
   <div class="content-chat" [ngClass]="!idParam ? 'hidden-sp' : ''">
-    <app-chatDetail *ngIf="idParam; else noUserId"></app-chatDetail>
-    <ng-template #noUserId>
-      <p class="empty">Hãy chọn một đoạn chat hoặc bắt đầu cuộc trò chuyện mới</p>
-    </ng-template>
+    <app-chatDetail *ngIf="idParam"
+     [idParam]="idParam" [currUser]="currUser"></app-chatDetail>
+    <p *ngIf="!idParam" class="empty">Hãy chọn một đoạn chat hoặc bắt đầu cuộc trò chuyện mới</p>
   </div>
 </div>

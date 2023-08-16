@@ -16,7 +16,7 @@ export class SignalRService {
 
   startConnectChat(id: string): void {
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(this.apiUrl + `/hub/chat?UserId=${id}`)
+      .withUrl(this.apiUrl + `/hub/chat?userId=${id}`)
       .withAutomaticReconnect()
       .build();
 
@@ -46,6 +46,17 @@ export class SignalRService {
 
   onReceiveMessage(callback: (data: any) => void) {
     this.hubConnection.on('ReceiveMessage', data => {
+      callback(data);
+    });
+  }
+
+  ReadMessage(obj: object): void {
+    this.hubConnection.invoke('ReadMessage', obj)
+      .catch(err => console.error('Xảy ra lỗi khi kiểm tra đã xem hay chưa ', err));
+  }
+
+  OnReadMessage(callback: (data: any) => void) {
+    this.hubConnection.on('OnReadMessage', data => {
       callback(data);
     });
   }

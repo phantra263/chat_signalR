@@ -10,11 +10,13 @@ import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Rout
 export class AppComponent implements OnInit {
   currUser :any = localStorage.getItem('account') || null;
   constructor(
-    private router: Router
+    private router: Router,
+    private ngZone: NgZone
   ) {}
 
   ngOnInit() {
     this.currUser = JSON.parse(this.currUser);
+    this.ngZone.run(() => { });
   }
 
   logout() {
