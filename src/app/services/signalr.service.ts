@@ -1,22 +1,18 @@
 import { Injectable } from '@angular/core';
 // import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import * as signalR from '@microsoft/signalr';
-import { Subject } from 'rxjs';
-import { AppComponent } from '../app.component';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SignalRService {
   private hubConnection: signalR.HubConnection;
-  public notiReceived: Subject<string> = new Subject<string>();
-  public listNoti: string[] = [];
-  private apiUrl = 'https://www.signalr-test.somee.com';
+  private apiUrl = 'https://www.app-chat.somee.com';
   // private apiUrl = 'http://192.168.2.173';
 
   startConnectChat(id: string): void {
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(this.apiUrl + `/hub/chat?UserId=${id}`)
+      .withUrl(this.apiUrl + `/hub/chat?userId=${id}`)
       .withAutomaticReconnect()
       .build();
 
@@ -45,13 +41,30 @@ export class SignalRService {
   }
 
   onReceiveMessage(callback: (data: any) => void) {
-    this.hubConnection.on('ReceiveMessage', data => {
+    this.hubConnection.on('OnReceiveMessage', data => {
+      callback(data);
+    });
+  }
+
+  ReadMessage(obj: object): void {
+    this.hubConnection.invoke('ReadMessage', obj)
+      .catch(err => console.error('Xảy ra lỗi khi kiểm tra đã xem hay chưa ', err));
+  }
+
+  OnReadMessage(callback: (data: any) => void) {
+    this.hubConnection.on('OnReadMessage', data => {
       callback(data);
     });
   }
 
   onConnected(callback: (data: any) => void) {
     this.hubConnection.on('OnConnected', data => {
+      callback(data);
+    });
+  }
+
+  OnReceiveNewMessageBox(callback: (data: any) => void) {
+    this.hubConnection.on('OnReceiveNewMessageBox', data => {
       callback(data);
     });
   }

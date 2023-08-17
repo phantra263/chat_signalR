@@ -1,0 +1,103 @@
+<!-- <nz-card class="chat">
+  <div class="wrap-chat">
+    <div class="list-chat">
+      <div class="search">
+        <nz-input-group [nzSuffix]="suffixIconSearch">
+          <input type="text" nz-input placeholder="Tìm kiếm" />
+        </nz-input-group>
+        <ng-template #suffixIconSearch>
+          <span nz-icon nzType="search"></span>
+        </ng-template>
+      </div>
+
+      <nz-tabset>
+        <nz-tab nzTitle="Người dùng">
+          <ul class="list-user" id="list-user">
+            <li *ngFor="let data of listUserChat"  [ngClass]="hasConversation && data.id === userChatWith.id ? 'active' : ''" (click)="changeConversary(user.id, data.id)">
+              <div class="wrap-avartar">
+                <img [src]="data.avatar" alt="">
+                <span class="online" *ngIf="data.isOnline"></span>
+              </div>
+    
+              <div class="infor">
+                <h5>{{data.lastName}} {{data.firstName}}</h5>
+                <div class="last-mess">
+                  <p>{{data.lastMess}}</p>
+                  <time>{{data.lastTimeMess | timeAgo}}</time>
+                </div>
+              </div>
+
+              <span class="mark" *ngIf="!data.seen"></span>
+            </li>
+          </ul>
+        </nz-tab>
+        <nz-tab nzTitle="Nhóm">
+          <ul class="list-user">
+            <li *ngFor="let i of [1,2,3,4]">
+              <img src="https://picsum.photos/200/300" alt="">
+
+              <div class="infor">
+                <h5>Nhóm 1</h5>
+                <div class="last-mess">
+                  <p>If you have correctly implemented the changes above, clicking on a notification in the list should
+                    display its details in the same component</p>
+                  <time>1 giờ trước</time>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </nz-tab>
+      </nz-tabset>
+    </div>
+
+    <nz-spin nzTip="Loading..." [nzSpinning]="isSpinning">
+      <div class="content-chat"[ngStyle]="{'background': !hasConversation ? '#f0f2f5' : ''}">
+        <div class="detail-chat">
+          <h1 *ngIf="!hasConversation" class="mess-empty">Hãy chọn một đoạn chat hoặc bắt đầu cuộc trò chuyện mới</h1>
+  
+          <div class="detail-user-chat mess-empty" *ngIf="hasConversation && listChatHistory.length === 0">
+            <img [src]="userChatWith.avatar" alt="">
+            <h3>
+              {{userChatWith.lastName}} {{userChatWith.firstName}}
+            </h3>
+            <p>Hãy bắt đầu nhắn tin với {{userChatWith.firstName}} nào!</p>
+          </div>
+          
+          <div class="chat-history" *ngIf="hasConversation && listChatHistory.length > 0" #messageContainer>
+            <ul>
+              <li *ngFor="let data of listChatHistory; let i = index " [ngClass]="!(i > 0 && this.checkShowAvatar(listChatHistory[i - 1], data)) ? 'mt-0' : ''">
+                <div class="wrap-message"
+                  [ngClass]="myName === data.senderName ? 'my-message' : ''">
+                  <figure>
+                    <img [src]="myName === data.senderName ? user.avatar : userChatWith.avatar" alt=""
+                    *ngIf="(i === 0 || i > 0 && checkShowAvatar(listChatHistory[i - 1], data))">
+                  </figure>
+             
+                  <p class="message">
+                    {{data.content}}
+                  </p>
+                  <span class="message-data-time">{{ data.timming | TimeMessFormat }}</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="wrap-input-chat" *ngIf="hasConversation">
+          <div class="input-chat">
+            <textarea [nzAutosize]="{ minRows: 1, maxRows: 3 }" nz-input [(ngModel)]="inputChat" (keydown.enter)="onEnterKeyPressed($event)"></textarea>
+            <span nz-icon nzType="smile" nzTheme="fill" class="pick-emoji"
+              (click)="toggled = !toggled"
+              [(emojiPickerIf)]="toggled"
+              [emojiPickerDirection]="'left'"
+              (emojiPickerSelect)="handleSelection($event)"></span>
+          </div>
+  
+          <button [disabled]="!inputChat.trim() ? true : false" nz-button nzType="primary" [nzSize]="'small'" nzShape="round" (click)="sendMess()">
+            <span nz-icon nzType="send"></span>
+            Send
+          </button>
+        </div>
+      </div>
+    </nz-spin>
+  </div>
+</nz-card> -->

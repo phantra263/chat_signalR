@@ -1,0 +1,48 @@
+<div class="wrap-modal">
+  <img src="https://github.githubassets.com/images/modules/site/home/hero-glow.svg" alt="Glowing universe" class="js-warp-hide position-absolute overflow-hidden home-hero-glow events-none">
+
+  <form [formGroup]="form" class="modal" (ngSubmit)="onSubmit($event)" [ngClass]="flagSignUp ? 'flag' : ''">
+    <h1>Welcome to Chat!<br>let's start an anonymous chat...</h1>
+    <div *ngIf="flagSignUp">
+      <label for="pick-color">Please pick your backgound avatar*</label>
+    
+      <div class="list-color" id="pick-color">
+        <div *ngFor="let data of listColor">
+          <input [id]="data" type="radio" [value]="data" [name]="data" />
+          <label [for]="data" [style.backgroundColor]="data" (click)="activeColor = data" [ngClass]="data === activeColor ? 'active' : ''"></label>
+        </div>
+      </div>
+    </div>
+
+    <label for="nickName">Enter your nickname*</label>
+    <div class="input">
+      <span>→</span>
+      <input type="text" id="nickName" maxlength="12" formControlName="nickname">
+    </div>
+    <p *ngIf="errNickName" class="err">{{errNickName}}</p>
+
+    <label for="password">Enter your password*</label>
+    <div class="input">
+      <span>→</span>
+      <input type="text" id="password" minlength="6" formControlName="password">
+    </div>
+    <p *ngIf="form.get('password').hasError('minlength') && form.get('password')" class="err">Password must be at least 6 characters.</p>
+
+    <p *ngIf="err" class="err">{{err}}</p>
+
+    <div class="form-control">
+      <button (click)="flag()" type="button" class="btn-left" *ngIf="!flagSignUp">Sign Up</button>
+      <button (click)="flag()" type="button" class="btn-left" *ngIf="flagSignUp">Sign In</button>
+      <button type="submit" [disabled]="form.invalid">Continute</button>
+    </div>
+  </form>
+
+  <div class="signup-space">
+    <div class="signup-stars"></div>
+    <div class="signup-stars"></div>
+    <div class="signup-stars"></div>
+    <div class="signup-stars"></div>
+    <div class="signup-stars"></div>
+    <div class="signup-stars"></div>
+  </div>
+</div>

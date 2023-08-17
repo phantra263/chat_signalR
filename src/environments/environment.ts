@@ -4,19 +4,10 @@
 
 export const environment = {
   production: false,
+  apiUrl: 'https://www.app-chat.somee.com',
   // apiUrl: 'http://192.168.2.173',
-  apiUrl: 'http://localhost',
   fileUrl: 'http://192.168.25.24:5050/Resources',
-  secretKey: '00000000-0000-0000-0000-000000000000',
-  infoApp: {
-    version: '1.20221215.1',
-    name: 'Esuhai.HRM'
-  },
-  soNgayDieuChinhTimesheet: 7,
-  soNgayXetDuyetCap1: 7,
-  soNgayXetDuyetCap2: 11,
-  JWT_TOKEN : 'ttstoken',
-  LOGIN_INFO : 'ttsuser'
+  secretKey: '00000000-0000-0000-0000-000000000000'
 };
 
 /*
