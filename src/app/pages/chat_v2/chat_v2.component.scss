@@ -1,7 +1,8 @@
 .wrap-chat {
   display: flex;
-  height: calc(100vh - 20px);
   overflow: hidden;
+  padding: 10px;
+
   .hidden-sp {
     @media only screen and (max-width: 900px) {
       display: none;
@@ -155,26 +156,28 @@
           .mark {
             content: '';
             position: absolute;
-            width: 18px;
+            width: 16px;
             height: 9px;
-            top: 15px;
+            top: 12px;
             right: 0;
           }
         }
       }
     }
     .list-groups {
+      height: 231px;
       ul {
-        max-height: calc(100vh - 73vh);
-        min-height: calc(100vh -73vh);
+        max-height: calc(100% - 41px);
+        min-height: calc(100% -41px);
         overflow-y: auto;
       }
     }
     .list-users {
       margin-bottom: 0;
+      height: calc(100vh - 84px);
       ul {
-        max-height: calc(100vh - 65vh);
-        min-height: calc(100vh - 65vh);
+        max-height: calc(100% - 41px);
+        min-height: calc(100% - 41px);
         overflow-y: auto;
       }
     }

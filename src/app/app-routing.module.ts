@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { ChatComponent } from './pages/chat/chat.component';
 import { Chat_v2Component } from './pages/chat_v2/chat_v2.component';
-import { ChatDetailComponent } from './pages/chatDetail/chatDetail.component';
 import { PageNotFoundComponent } from './pages/pageNotFound/pageNotFound.component';
 
 export const routes: Routes = [

@@ -1,4 +1,4 @@
-<div class="wrap-content" *ngIf="userChatWith">
+<div class="wrap-content" *ngIf="!checkIsEmpty(userChatWith)">
   <div class="header">
     <div class="user">
       <div class="avatar" [ngStyle]="{'background-color' : userChatWith.AvatarBgColor}">
@@ -45,13 +45,13 @@
   <div class="wrap-input-chat">
     <div class="input-chat">
       <textarea [(ngModel)]="inputChat" rows="1" (keydown.enter)="onEnterKeyPressed($event)"></textarea>
-      <span class="pick-emoji"
+      <!-- <span class="pick-emoji"
         (click)="toggled = !toggled"
         [(emojiPickerIf)]="toggled"
         [emojiPickerDirection]="'left'"
         (emojiPickerSelect)="handleSelection($event)">
         <img src="./assets/images/icon-face.png" alt="">
-      </span>
+      </span> -->
     </div>
     <button [disabled]="!inputChat.trim() ? true : false" (click)="sendMess()">
       Send

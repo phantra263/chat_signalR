@@ -1,17 +1,13 @@
 import { Injectable } from '@angular/core';
 // import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import * as signalR from '@microsoft/signalr';
-import { Subject } from 'rxjs';
-import { AppComponent } from '../app.component';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SignalRService {
   private hubConnection: signalR.HubConnection;
-  public notiReceived: Subject<string> = new Subject<string>();
-  public listNoti: string[] = [];
-  // private apiUrl = 'https://www.signalr-test.somee.com';
+  // private apiUrl = 'https://www.app-chat.somee.com';
   private apiUrl = 'http://192.168.2.173';
 
   startConnectChat(id: string): void {
@@ -45,7 +41,7 @@ export class SignalRService {
   }
 
   onReceiveMessage(callback: (data: any) => void) {
-    this.hubConnection.on('ReceiveMessage', data => {
+    this.hubConnection.on('OnReceiveMessage', data => {
       callback(data);
     });
   }
@@ -63,6 +59,12 @@ export class SignalRService {
 
   onConnected(callback: (data: any) => void) {
     this.hubConnection.on('OnConnected', data => {
+      callback(data);
+    });
+  }
+
+  OnReceiveNewMessageBox(callback: (data: any) => void) {
+    this.hubConnection.on('OnReceiveNewMessageBox', data => {
       callback(data);
     });
   }

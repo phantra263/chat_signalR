@@ -19,7 +19,7 @@
       </div>
     </div>
 
-    <div class="list-groups panel">
+    <!-- <div class="list-groups panel">
       <h1>Groups</h1>
       <ul class="list-chat">
         <li *ngFor="let data of [1, 2, 3]">
@@ -38,7 +38,7 @@
           <span class="mark"></span>
         </li>
       </ul>
-    </div>
+    </div> -->
 
     <div class="list-users panel">
       <h1>Peoples</h1>
@@ -57,7 +57,7 @@
           </div>
           <span class="mark" *ngIf="data.Content">
             <img src="./assets/images/icon-seen.png" alt="" *ngIf="data.IsSeen">
-            <img src="./assets/images/mess-not-seen.png" alt="" *ngIf="!data.IsSeen && data.ConversationId !== idParam">
+            <img src="./assets/images/mess-not-seen.png" alt="" *ngIf="!data.IsSeen && data.SenderId !== currUser.Id">
           </span>
         </li>
       </ul>

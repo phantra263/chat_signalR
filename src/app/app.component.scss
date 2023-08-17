@@ -1,11 +1,12 @@
 main {
   display: flex;
-  padding: 10px;
+  // padding: 10px;
   background: #EFF6FC;
   .side-bar {
     // position: fixed;
     // left: 20px;
     // top: 20px;
+    margin: 10px 0 10px 10px;
     min-height: calc(100vh - 20px);
     display: flex;
     flex-direction: column;
@@ -60,5 +61,6 @@ main {
   }
   .w-container {
     flex: 1;
+    height: 100vh;
   }
 }

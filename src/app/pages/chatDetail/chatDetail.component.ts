@@ -14,7 +14,7 @@ export class ChatDetailComponent implements OnInit,OnChanges {
   @Input() currUser: any;
   @Input() status: boolean = false;
 
-  userChatWith: any = null;
+  userChatWith: any = {};
   inputChat: string = '';
   toggled: boolean = false;
   listMessage: any = [];
@@ -24,11 +24,9 @@ export class ChatDetailComponent implements OnInit,OnChanges {
     PageNumber: 1,
     PageSize: 9999
   }
-  resp: any;
   isLoading: boolean = true;
 
   constructor(
-    private route: ActivatedRoute,
     private ChatSrv: ChatService,
     private signalRService: SignalRService,
     private ngZone: NgZone
@@ -50,7 +48,6 @@ export class ChatDetailComponent implements OnInit,OnChanges {
         this.ngZone.run(() => { });
       }
     })
-
     this.signalRService.onConnected(data => {
       if (data.succeeded) {
         this.userChatWith.IsOnline = data.data.isOnline
@@ -66,7 +63,7 @@ export class ChatDetailComponent implements OnInit,OnChanges {
   }
 
 
-  async ngOnChanges(changes: SimpleChanges) {
+  ngOnChanges(changes: SimpleChanges) {
     if (changes.idParam) {
       this.filterParam = {
         ...this.filterParam,
@@ -77,15 +74,20 @@ export class ChatDetailComponent implements OnInit,OnChanges {
       if (resp.Succeeded) {
         this.listMessage = resp.Data.Messages;
         this.userChatWith = {
+          ...this.userChatWith,
           AvatarBgColor: resp.Data.AvatarBgColor,
           Nickname: resp.Data.Nickname,
           Id: resp.Data.Id,
           IsOnline: resp.Data.IsOnline
         }
-      }
-      this.isLoading = false;
+        this.isLoading = false;
+        }
       })
     }
+  }
+
+  checkIsEmpty(obj) {
+    return Object.keys(obj).length === 0;
   }
 
   ngAfterViewChecked() {

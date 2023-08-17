@@ -38,6 +38,8 @@ export class Chat_v2Component implements OnInit {
     ) {}
 
   ngOnInit() {
+    this.currUser = JSON.parse(this.currUser);
+
     // show toast notify window
     if ('Notification' in window) {
       if (Notification.permission !== 'granted') {
@@ -54,7 +56,6 @@ export class Chat_v2Component implements OnInit {
       }
     }
 
-    this.currUser = JSON.parse(this.currUser);
     // fetch list user chat with
     const params = {
       UserId: this.currUser.Id,
@@ -95,13 +96,31 @@ export class Chat_v2Component implements OnInit {
       })
       this.ngZone.run(() => { });
     })
-
     this.signalRService.OnReadMessage((data) => {
       const conversary = this.listUserChat.find(item => item.ConversationId === data.conversationId);
       if (conversary) conversary.IsSeen = true;
       this.ngZone.run(() => { });
+    });
+    this.signalRService.OnReceiveNewMessageBox((data)=> {
+      // data của signalr trả về chữ thường, nên phải chuyển key sang in hoa
+      const dataBox = 
+        {
+          Id: data.id,
+          ConversationId: data.conversationId,
+          IsLock: data.isLock,
+          IsMute: data.isMute,
+          UserId: data.userId,
+          Nickname: data.nickname,
+          AvatarBgColor: data.avatarBgColor,
+          Status: data.status,
+          IsOnline: data.isOnline,
+          Content: data.content,
+          IsSeen: data.isSeen,
+          Created: data.created
+      }
+      this.listUserChat.push(dataBox);
+      this.ngZone.run(() => { });
     })
-
     this.signalRService.onReceiveNotificationMessage(data => {
       if (data.succeeded) this.toastNotification(`${data.data.content}`);
     });
@@ -127,7 +146,6 @@ export class Chat_v2Component implements OnInit {
     })
   }
 
-
   search() {
     this.showSearch = true;
     if (this.inputSearch) {
@@ -142,6 +160,7 @@ export class Chat_v2Component implements OnInit {
       })
     }
   }
+
   confirmSearch(data) {
     this.filterParams = {
       ...this.filterParams,
@@ -163,8 +182,7 @@ export class Chat_v2Component implements OnInit {
         // this.router.navigate(['/chat', resp.Data.ConversationId]);
         this.router.navigate([], { queryParams: { id: resp.Data.ConversationId }, queryParamsHandling: 'merge' });
         
-        // read message
-        this.readMessage();
+        if (this.userChatWith.Content) this.readMessage();
       }
     })
 
@@ -185,8 +203,8 @@ export class Chat_v2Component implements OnInit {
     this.userChatWith = data;
     // this.router.navigate(['/chat', data.ConversationId]);
 
-    // read message
-    this.readMessage();
+    //read message
+    if (this.userChatWith.Content) this.readMessage();
     this.router.navigate([], { queryParams: { id: data.ConversationId }, queryParamsHandling: 'merge' });
     this.hasId = true;
   }
