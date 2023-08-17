@@ -26,12 +26,12 @@
     </div>
 
     <ul>
-      <li *ngFor="let data of listMessage; let i = index" [ngClass]="!(i > 0 && this.checkShowAvatar(listMessage[i - 1], data)) ? 'mt-0' : ''">
-        <div class="wrap-message" 
-        [ngClass]="currUser.Id === data.senderId ? 'my-message' : ''">
-          <figure *ngIf="currUser.Id !== data.senderId" 
+      <li *ngFor="let data of listMessage; let i = index"
+        [ngClass]="!(i > 0 && this.checkShowAvatar(listMessage[i - 1], data)) ? 'mt-0' : ''">
+        <div class="wrap-message" [ngClass]="currUser.Id === data.senderId ? 'my-message' : ''">
+          <figure *ngIf="currUser.Id !== data.senderId"
             [ngClass]="(i === 0 || i > 0 && checkShowAvatar(listMessage[i - 1], data)) ? '' : 'hidden'"
-          [ngStyle]="{'background-color' : userChatWith.AvatarBgColor}" [title]="userChatWith.Nickname">
+            [ngStyle]="{'background-color' : userChatWith.AvatarBgColor}" [title]="userChatWith.Nickname">
             {{userChatWith.Nickname[0]}}
           </figure>
           <p class="message">
@@ -59,6 +59,14 @@
   </div>
 </div>
 
-<div *ngIf="isLoading" class="loading-overlay">
-  <div class="loading-spinner"></div>
+<div *ngIf="isLoading">
+  <div class="container-loading">
+    <div class="ball"></div>
+    <div class="ball"></div>
+    <div class="ball"></div>
+    <div class="ball"></div>
+    <div class="ball"></div>
+    <div class="ball"></div>
+    <div class="ball"></div>
+  </div>
 </div>

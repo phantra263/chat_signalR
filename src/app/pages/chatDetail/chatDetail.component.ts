@@ -1,5 +1,5 @@
 import { Component, ViewChild, Input, OnInit, NgZone, ElementRef, Renderer2, SimpleChanges, OnChanges } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ChatService } from 'src/app/services/chat.service';
 import { SignalRService } from 'src/app/services/signalr.service';
 
@@ -29,7 +29,8 @@ export class ChatDetailComponent implements OnInit,OnChanges {
   constructor(
     private ChatSrv: ChatService,
     private signalRService: SignalRService,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private router: Router,
     ) { }
 
   ngOnInit() {
@@ -81,7 +82,7 @@ export class ChatDetailComponent implements OnInit,OnChanges {
           IsOnline: resp.Data.IsOnline
         }
         this.isLoading = false;
-        }
+        } else  this.router.navigate(['/chat'])
       })
     }
   }

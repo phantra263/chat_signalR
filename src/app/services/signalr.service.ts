@@ -7,8 +7,8 @@ import * as signalR from '@microsoft/signalr';
 })
 export class SignalRService {
   private hubConnection: signalR.HubConnection;
-  // private apiUrl = 'https://www.app-chat.somee.com';
-  private apiUrl = 'http://192.168.2.173';
+  private apiUrl = 'https://www.app-chat.somee.com';
+  // private apiUrl = 'http://192.168.2.173';
 
   startConnectChat(id: string): void {
     this.hubConnection = new signalR.HubConnectionBuilder()

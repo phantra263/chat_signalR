@@ -102,6 +102,8 @@ export class Chat_v2Component implements OnInit {
       this.ngZone.run(() => { });
     });
     this.signalRService.OnReceiveNewMessageBox((data)=> {
+      console.log(data);
+
       // data của signalr trả về chữ thường, nên phải chuyển key sang in hoa
       const dataBox = 
         {
@@ -116,7 +118,8 @@ export class Chat_v2Component implements OnInit {
           IsOnline: data.isOnline,
           Content: data.content,
           IsSeen: data.isSeen,
-          Created: data.created
+          Created: data.created,
+          SenderId: data.senderId
       }
       this.listUserChat.push(dataBox);
       this.ngZone.run(() => { });
