@@ -1,0 +1,58 @@
+main {
+  --bg-menu: #6E00FF;
+  --bg-menu-active: #612DD1;
+}
+main.color-ffae00 {
+  --bg-menu: #ffae00;
+  --bg-menu-active: #ffbf00; 
+}
+main.color-ffae00 {
+  --bg-menu: #ffae00;
+  --bg-menu-active: #ffbf00; 
+}
+main.color-3adb76 {
+  --bg-menu: #3adb76;
+  --bg-menu-active: #56ee5c; 
+}
+main.color-767676 {
+  --bg-menu: #767676;
+  --bg-menu-active: #9E9E9E; 
+}
+main.color-1779ba {
+  --bg-menu: #1779ba;
+  --bg-menu-active: #33aae6; 
+}
+main.color-ff1500 {
+  --bg-menu: #ff1500;
+  --bg-menu-active: #b35757; 
+}
+main.color-a98a30 {
+  --bg-menu: #a98a30;
+  --bg-menu-active: #bb8e4c; 
+}
+main.color-00b30f {
+  --bg-menu: #00b30f;
+  --bg-menu-active: #5fda3e; 
+}
+main .bg-theme01 {
+  background-image: none;
+  background: #fff;
+}
+
+main .bg-theme02 {
+  background-image: url('assets/images/bg-theme02.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+main .bg-theme03 {
+  background: rgba(255, 122, 89, .5);
+}
+
+main .bg-theme04 {
+  background-image: url('assets/images/bg-theme04.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}

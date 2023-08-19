@@ -20,6 +20,12 @@ import { ChatDetailComponent } from './pages/chatDetail/chatDetail.component';
 import { FormComponent } from './pages/form/form.component';
 import { CommonService } from './services/common.service';
 import { PageNotFoundComponent } from './pages/pageNotFound/pageNotFound.component';
+import { SettingComponent } from './pages/setting/setting.component';
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import { appReducer } from './reducers/app.reducer';
+import { AppEffects } from './effects/app.effects';
+import { ModalComponent } from './pages/modal/modal.component';
 
 
 registerLocaleData(en);
@@ -38,7 +44,9 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     Chat_v2Component,
     ChatDetailComponent,
     FormComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    SettingComponent,
+    ModalComponent
   ],
   imports: [
     BrowserModule,
@@ -48,7 +56,8 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     FormsModule,
     ReactiveFormsModule,
     NgxEmojiPickerModule,
-
+    StoreModule.forRoot({ app: appReducer }),
+    EffectsModule.forRoot([AppEffects]),
     HttpClientModule
   ],
   providers: [

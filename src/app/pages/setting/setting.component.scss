@@ -1,0 +1,86 @@
+.setting {
+  height: auto;
+  padding: 20px 10px 10px;
+  background: #fff;
+  min-height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 30%;
+  z-index: 10;
+  background: #eee;
+  max-height: calc(100vh - 20px);
+  overflow-y: auto;
+  @media only screen and (max-width: 900px) {
+    width: 100%;
+  }
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    .icon-close {
+      cursor: pointer;
+      transition: all 0.3s;
+      &:hover {
+        transform: rotate(90deg) scale(1.2);
+      }
+    }
+  }
+  h1 {
+    font-size: 25px;
+    display: flex;
+    align-items: center;
+    img {
+      margin-left: 10px;
+    }
+  }
+  .block-setting {
+    margin-bottom: 40px;
+    h2 {
+      font-size: 18px;
+      margin-bottom: 20px;
+      color: #9d6161;
+    }
+    .list-color {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+      input {
+        display: none;
+      }
+      label {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        display: inline-block;
+        background: #fff;
+        margin: 0 5px;
+        cursor: pointer;
+        &.active {
+          outline: red solid 3px;
+        }
+      }
+    }
+  
+    .list-theme {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      .theme {
+        width: calc(50% - 10px);
+        border: 1px solid #cca4a4;
+        padding: 5px;
+        cursor: pointer;
+        &.activeBgTheme {
+          border: 5px solid red;
+        }
+        img {
+          width: 100%;
+        }
+      }
+    }
+  }
+}

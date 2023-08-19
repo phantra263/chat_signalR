@@ -59,19 +59,30 @@
       display: flex;
       align-items: center;
       margin-bottom: 10px;
+      position: relative;
       span {
         color: #ea4aaa;
         margin-right: 5px;
       }
       input {
         border-radius: 6px;
-        margin-right: 3px;
         padding: 5px 12px;
         border: 1px solid #035af0;
         flex: 1;
         background-color: #0c162d;
         color: #fff;
         font-family: ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace;
+        &#password {
+          padding-right: 30px;
+        }
+      }
+      .eyes {
+        position: absolute;
+        right: 4px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        width: 20px;
       }
     }
     .err {

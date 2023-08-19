@@ -1,4 +1,4 @@
-<main *ngIf="currUser">
+<main *ngIf="currUser" [ngClass]="getClassNameFromColor(colorMenu$ | async)">
   <div class="side-bar">
     <div class="avatar" [ngStyle]="{'background-color' : currUser.AvatarBgColor}" [title]="currUser.Nickname">
       {{currUser.Nickname[0]}}
@@ -6,14 +6,17 @@
     <ul class="menu">
       <li routerLink="/chat" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }" ><img src="../assets/images/icon-mess.png" alt="icon"></li>
       <li><img src="../assets/images/icon-bell.png" alt="icon"></li>
-      <li><img src="../assets/images/icon-setting.png" alt="icon"></li>
+      <li (click)="flagSetting = !flagSetting" [ngClass]="flagSetting ? 'active' : ''"><img src="../assets/images/icon-setting.png" alt="icon"></li>
     </ul>
     <img src="../assets/images/icon-logout.png" alt="icon" class="icon-logout" (click)="logout()" title="logout">
   </div>
-
   <div class="w-container">
+    <!-- modal setting -->
+    <app-setting *ngIf="flagSetting" (closeSetting$)="flagSetting = false"></app-setting>
+
     <router-outlet></router-outlet>
   </div>
 </main>
 
 <app-form *ngIf="!currUser"></app-form>
+

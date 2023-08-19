@@ -1,8 +1,11 @@
-import { Component, ElementRef, HostListener, NgZone, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { Component, ElementRef, NgZone, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Store, select } from '@ngrx/store';
+import { selectVariable2 } from 'src/app/selectors/app.selectors';
 import { ChatService } from 'src/app/services/chat.service';
 import { SignalRService } from 'src/app/services/signalr.service';
-import { HttpClient } from '@angular/common/http';
+import { SnackbarService } from 'src/app/services/snackbar.service';
+import { AppState } from 'src/app/states/app.state';
 
 @Component({
   selector: 'app-chat_v2',
@@ -24,18 +27,35 @@ export class Chat_v2Component implements OnInit {
     SenderId: '',
     ReceiverId: ''
   }
+  paramsListUser = {
+    UserId: '',
+    PageNumber: 1,
+    PageSize: 9999
+  }
+  paramsListRoom = {
+    Keyword: '',
+    PageNumber: 1,
+    PageSize: 9999
+  }
   idParam: string = '';
   routePath: string = '';
-  
+  flagModalAddRoom: boolean = false;
+  nameRoom: string = '';
+  errAddRoom: string = '';
+  listRoomChat: any = [];
+  roomIdParam: string = '';
+  roomChatActive: string = '';
+  bgThemeData$ = this.store.pipe(select(selectVariable2));
   constructor(
     private route: ActivatedRoute,
     private chatSrv: ChatService,
     private router: Router,
     private signalRService: SignalRService,
-    private http: HttpClient,
     private renderer: Renderer2,
-    private ngZone: NgZone
-    ) {}
+    private ngZone: NgZone,
+    private snackbarService: SnackbarService,
+    private store: Store<AppState>
+    ) { }
 
   ngOnInit() {
     this.currUser = JSON.parse(this.currUser);
@@ -57,15 +77,22 @@ export class Chat_v2Component implements OnInit {
     }
 
     // fetch list user chat with
-    const params = {
-      UserId: this.currUser.Id,
-      PageNumber: 1,
-      PageSize: 9999
-    }
-    this.fetchListUser(params);
+    this.paramsListUser.UserId = this.currUser.Id;
+    this.fetchListUser(this.paramsListUser);
+
+    // fetch list room chat
+    this.paramsListUser.UserId = this.currUser.Id;
+    this.fetchListRoom(this.paramsListRoom);
 
     this.route.queryParamMap.subscribe((queryParam: any) => {
-      this.idParam = queryParam.get('id');
+      const params = Object.keys(queryParam.params);
+      if (params[0] === 'roomId') {
+        this.roomIdParam = queryParam.get('roomId');
+        this.idParam = '';
+      } else {
+        this.idParam = queryParam.get('id');
+        this.roomIdParam = '';
+      }
     });
 
     // connect signalR
@@ -102,8 +129,6 @@ export class Chat_v2Component implements OnInit {
       this.ngZone.run(() => { });
     });
     this.signalRService.OnReceiveNewMessageBox((data)=> {
-      console.log(data);
-
       // data của signalr trả về chữ thường, nên phải chuyển key sang in hoa
       const dataBox = 
         {
@@ -127,6 +152,9 @@ export class Chat_v2Component implements OnInit {
     this.signalRService.onReceiveNotificationMessage(data => {
       if (data.succeeded) this.toastNotification(`${data.data.content}`);
     });
+    this.signalRService.OnPushRoomToAny(data => {
+      this.listRoomChat.push(data);
+    })
   }
 
    changeStatus(data) {
@@ -145,6 +173,14 @@ export class Chat_v2Component implements OnInit {
     this.chatSrv.getListUser(param).subscribe((resp: any) => {
       if (resp.Succeeded) {
         this.listUserChat = resp.Data;
+      }
+    })
+  }
+
+  fetchListRoom(param: any) {
+    this.chatSrv.getAllRoom(param).subscribe((resp: any) => {
+      if (resp.Succeeded) {
+        this.listRoomChat = resp.Data
       }
     })
   }
@@ -186,10 +222,9 @@ export class Chat_v2Component implements OnInit {
         this.router.navigate([], { queryParams: { id: resp.Data.ConversationId }, queryParamsHandling: 'merge' });
         
         if (this.userChatWith.Content) this.readMessage();
-      }
+      } else this.snackbarService.show('error', resp.Message);
     })
 
-    this.selectedIndex = -1;
     this.listSearch = [];
     this.showSearch = false;
     this.inputSearch = '';
@@ -204,21 +239,23 @@ export class Chat_v2Component implements OnInit {
   }
   startChat(data) {
     this.userChatWith = data;
-    // this.router.navigate(['/chat', data.ConversationId]);
-
     //read message
     if (this.userChatWith.Content) this.readMessage();
-    this.router.navigate([], { queryParams: { id: data.ConversationId }, queryParamsHandling: 'merge' });
+    this.router.navigate([], { queryParams: { id: data.ConversationId } });
+    this.hasId = true;
+  }
+  startChatRoom(data) {
+    this.roomChatActive = data;
+    this.router.navigate([], { queryParams: { roomId: data.id }});
     this.hasId = true;
   }
   openTooltipSearch() {
-    this.showSearch = true;
+    // this.showSearch = true;
     this.renderer.listen('document', 'click', (event: Event) => {
       if (!this.searchInput.nativeElement.contains(event.target)) {
-        this.showSearch = false;
+        // this.showSearch = false;
       }
     });
-    this.selectedIndex = -1;
   }
   onKeyDown(event: KeyboardEvent) {
     // if (this.showSearch) {
@@ -243,5 +280,27 @@ export class Chat_v2Component implements OnInit {
     };
 
     const notification = new Notification(title, options);
+  }
+
+  onSubmit(event: Event) {
+    event.preventDefault();
+
+    if (this.nameRoom) {
+      const room = {
+        name: this.nameRoom,
+        userId: this.currUser.Id
+      }
+      this.chatSrv.addRoomChat(room).then((resp: any) => {
+        if (resp.Succeeded && resp.Data) {
+          this.signalRService.pushRoomToAny(resp.Data);
+          this.closeModal();
+        } else this.errAddRoom = resp.Message
+      })
+    } else this.snackbarService.show('warning', 'Mời nhập tên phòng chat!');
+  }
+
+  closeModal() {
+    this.flagModalAddRoom = false;
+    this.nameRoom = '';
   }
 }

@@ -12,8 +12,7 @@ main {
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    background: #6E00FF;
-    border-radius: 15px;
+    background: var(--bg-menu);
     width: 70px;
     padding: 20px 0;
 
@@ -36,12 +35,13 @@ main {
         position: relative;
         cursor: pointer;
         margin: 5px auto;
+        text-align: center;
         img {
           width: 26px;
           margin: auto;
         }
         &:hover, &.active {
-          background: #612DD1;
+          background: var(--bg-menu-active);
           &::before {
             content: '';
             position: absolute;
@@ -61,6 +61,10 @@ main {
   }
   .w-container {
     flex: 1;
-    height: 100vh;
+    height: calc(100vh -20px);
+    max-height: calc(100vh - 20px);
+    overflow-y: auto;
+    margin: 10px;
+    position: relative;
   }
 }

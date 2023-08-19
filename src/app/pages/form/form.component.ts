@@ -17,12 +17,11 @@ export class FormComponent implements OnInit {
   activeColor: string = this.listColor[0];
   flagSignUp: boolean = true;
   err: string = '';
+  showPassword: boolean = false;
 
   form: FormGroup;
   constructor(
     private authService: ChatService,
-    private route: ActivatedRoute, 
-    private router: Router,
     private fb: FormBuilder
   ) { 
     this.form = this.fb.group({
@@ -61,7 +60,9 @@ export class FormComponent implements OnInit {
   }
 
   flag() {
+    this.err = '';
     this.flagSignUp = !this.flagSignUp;
+    this.showPassword = false;
     this.form.reset();
   }
 }

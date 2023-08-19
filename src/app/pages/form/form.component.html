@@ -24,7 +24,8 @@
     <label for="password">Enter your password*</label>
     <div class="input">
       <span>→</span>
-      <input type="text" id="password" minlength="6" formControlName="password">
+      <input type="{{ showPassword ? 'text' : 'password' }}" id="password" minlength="6" formControlName="password">
+      <img [src]="showPassword ? './assets/images/hide-password.png' : './assets/images/show-password.png'" class="eyes" alt="" (click)="showPassword = !showPassword">
     </div>
     <p *ngIf="form.get('password').hasError('minlength') && form.get('password')" class="err">Password must be at least 6 characters.</p>
 

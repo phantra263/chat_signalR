@@ -1,5 +1,5 @@
 <div class="wrap-chat">
-  <div class="side-bar-chat" [ngClass]="idParam ? 'hidden-sp' : 'w-100'">
+  <div class="side-bar-chat" [ngClass]="idParam || roomIdParam ? 'hidden-sp' : 'w-100'">
     <div class="search">
       <img src="./assets/images/icon-search.png" alt="">
       <input #searchInput type="text" placeholder="search" 
@@ -19,26 +19,27 @@
       </div>
     </div>
 
-    <!-- <div class="list-groups panel">
-      <h1>Groups</h1>
+    <div class="list-groups panel">
+      <div class="room">
+        <h1>Rooms</h1>
+        <button (click)="flagModalAddRoom = true">Add</button>
+      </div>
       <ul class="list-chat">
-        <li *ngFor="let data of [1, 2, 3]">
+        <li *ngFor="let data of listRoomChat" (click)="startChatRoom(data)" [ngClass]="data.id === roomIdParam ? 'active' : ''">
           <div class="wrap-avartar">
-            T
-            <span class="online"></span>
+            {{data.name[0]}}
           </div>
 
           <div class="infor">
-            <h5>Friends Forever</h5>
+            <h5> {{data.name}}</h5>
             <div class="last-mess">
-              <p>Hahahahah</p>
-              <time>11:00</time>
+              <p>{{data.content}}</p>
+              <time *ngIf="data.created">{{data.created | timeAgo}}</time>
             </div>
           </div>
-          <span class="mark"></span>
         </li>
       </ul>
-    </div> -->
+    </div>
 
     <div class="list-users panel">
       <h1>Peoples</h1>
@@ -64,9 +65,22 @@
     </div>
   </div>
 
-  <div class="content-chat" [ngClass]="!idParam ? 'hidden-sp' : ''">
-    <app-chatDetail *ngIf="idParam"
-     [idParam]="idParam" [currUser]="currUser"></app-chatDetail>
-    <p *ngIf="!idParam" class="empty">Hãy chọn một đoạn chat hoặc bắt đầu cuộc trò chuyện mới</p>
+  <div class="content-chat" [ngClass]="[!idParam && !roomIdParam ? 'hidden-sp' : '', bgThemeData$ | async]">
+    <app-chatDetail *ngIf="idParam || roomIdParam"
+     [idParam]="idParam" [currUser]="currUser" [roomIdParam]="roomIdParam"></app-chatDetail>
+    <p *ngIf="!idParam && !roomIdParam" class="empty">Hãy chọn một đoạn chat hoặc bắt đầu cuộc trò chuyện mới</p>
   </div>
 </div>
+
+<!-- modal add room -->
+<app-modal [modalVisible]="flagModalAddRoom" (closeModal$)="flagModalAddRoom = false">
+  <div class="content-modal">
+    <h1>Create room chat!</h1>
+
+    <label for="room">Name room:</label>
+    <input type="text" [(ngModel)]="nameRoom" id="room" name="room" maxlength="50">
+    <p *ngIf="errAddRoom" class="err-addroom">{{errAddRoom}}</p>
+
+    <button class="btn-submit" (click)="onSubmit($event)" type="submit">Create</button>
+  </div>
+</app-modal>

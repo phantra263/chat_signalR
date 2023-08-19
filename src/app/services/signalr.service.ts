@@ -92,4 +92,26 @@ export class SignalRService {
       callback(data);
     });
   }
+
+  pushRoomToAny(roomId: string): void {
+    this.hubConnection.invoke('PushRoomToAny', roomId)
+      .catch(err => console.error('Xảy ra lỗi khi tạo phòng: ', err));
+  }
+
+  OnPushRoomToAny(callback: (data: any) => void) {
+    this.hubConnection.on('OnPushRoomToAny', data => {
+      callback(data);
+    });
+  }
+
+  PushAnyNotiJoinRoom(roomId: string): void {
+    this.hubConnection.invoke('PushAnyNotiJoinRoom', roomId)
+      .catch(err => console.error('Xảy ra lỗi khi mới vào phòng chat: ', err));
+  }
+
+  OnPushAnyNotiJoinRoom(callback: (data: any) => void) {
+    this.hubConnection.on('OnPushAnyNotiJoinRoom', data => {
+      callback(data);
+    });
+  }
 }

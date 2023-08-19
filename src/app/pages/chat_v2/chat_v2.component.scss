@@ -1,7 +1,6 @@
 .wrap-chat {
   display: flex;
   overflow: hidden;
-  padding: 10px;
 
   .hidden-sp {
     @media only screen and (max-width: 900px) {
@@ -10,7 +9,7 @@
   }
   .side-bar-chat {
     width: 30%;
-    margin: 0 15px 0 5px;
+    margin: 0 3px 0 0;
     &.w-100 {
       @media only screen and (max-width: 900px) {
         width: 100%;
@@ -19,10 +18,8 @@
     .search {
       padding: 15px 15px 15px 47px;
       position: relative;
-      border-radius: 15px;
       background: #fff;
-      box-shadow: 0px 4px 5px 2px rgba(121, 197, 239, 0.38);
-      margin-bottom: 15px;
+      margin-bottom: 3px;
       img {
         position: absolute;
         left: 15px;
@@ -43,8 +40,6 @@
         overflow-y: auto;
         background: #fff;
         z-index: 10;
-        border-bottom-left-radius: 15px;
-        border-bottom-right-radius: 15px;
         box-shadow: 2px 9px 8px rgba(121, 197, 239, 0.38);
         ul {
           li {
@@ -72,14 +67,12 @@
     .panel {
       padding: 10px;
       background: #fff;
-      border-radius: 15px;
-      box-shadow: 0px 4px 5px 2px rgba(121, 197, 239, 0.38);
-      margin-bottom: 22px;
+      margin-bottom: 3px;
       h1 {
         font-size: 20px;
         font-weight: bold;
         color: #303030;
-        padding: 10px 10px;
+        padding: 5px 10px;
       }
       .list-chat {
         li {
@@ -165,7 +158,20 @@
       }
     }
     .list-groups {
-      height: 231px;
+      height: 35vh;
+      .room {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 5px;
+        button {
+          padding: 5px 10px;
+          background: var(--bg-menu);
+          color: #fff;
+          cursor: pointer;
+          border-radius: 5px;
+        }
+      }
       ul {
         max-height: calc(100% - 41px);
         min-height: calc(100% -41px);
@@ -174,7 +180,7 @@
     }
     .list-users {
       margin-bottom: 0;
-      height: calc(100vh - 84px);
+      height: calc(65vh - 72px);
       ul {
         max-height: calc(100% - 41px);
         min-height: calc(100% - 41px);
@@ -184,10 +190,8 @@
   }
   .content-chat {
     flex: 1;
-    background: #fff;
-    border-radius: 15px;
-    box-shadow: 0px 4px 5px 2px rgba(121, 197, 239, 0.38);
     position: relative;
+    min-height: calc(100vh - 20px);
     .empty {
       position: absolute;
       top: 50%;
@@ -198,5 +202,43 @@
       font-size: 22px;
       text-align: center;
     }
+  }
+}
+.content-modal {
+  background: url('../../../assets/images/bg-modal.png');
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-color: antiquewhite;
+  padding: 10px;
+  h1 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    color: #610303;
+  }
+  label {
+    font-style: italic;
+    margin-bottom: 5px;
+    display: block;
+  }
+  input {
+    width: 100%;
+    border: 1px solid #78a5ff;
+    padding: 5px;
+    margin-bottom: 5px;
+  }
+  .btn-submit {
+    margin-top: 15px;
+    display: block;
+    margin-left: auto;
+    padding: 6px 15px;
+    border-radius: 5px;
+    background: var(--bg-menu);
+    cursor: pointer;
+    color: #fff;
+  }
+  .err-addroom {
+    color: red;
+    font-size: 12px;
   }
 }

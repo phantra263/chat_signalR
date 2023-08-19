@@ -1,0 +1,28 @@
+<div class="setting">
+  <div class="header">
+    <h1>Setting<img src="./assets/images/icon-setting-black.png"/></h1>
+
+    <img class="icon-close" (click)="closeSetting()" src="./assets/images/icon-close.png" alt="">
+  </div>
+  
+  <div class="block-setting">
+    <h2>*Change theme sidebar</h2>
+    <div class="list-color" id="pick-color">
+      <div *ngFor="let data of listColorMenuBar">
+        <input [id]="data" type="radio" [value]="data" [name]="data" />
+        <label [for]="data" [style.backgroundColor]="'#' + data" (click)="changeColorMenu(data)" [ngClass]="data === activeColor ? 'active' : ''"></label>
+      </div>
+    </div>
+  </div>
+
+  <div class="block-setting">
+    <h2>*Change theme panel chat</h2>
+    <div class="list-theme">
+      <div *ngFor="let data of listBgTheme" class="theme" (click)="changeBgTheme(data)" 
+      [ngClass]="[data]"
+      [ngClass]="[data === activeBgTheme ? 'activeBgTheme' : '', data]">
+        <img src="./assets/images/theme-default.png" alt="">
+      </div>
+    </div>
+  </div>
+</div>

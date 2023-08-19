@@ -1,0 +1,114 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100&family=Pacifico&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+*{
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+body {
+	line-height: 1;
+  font-family: 'Roboto', sans-serif;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+input, textarea, button {
+	border: 0;
+}	
+input:focus {
+  outline: none;
+}
+textarea {
+	outline: none;
+}
+img {
+  width: inherit;
+}
+/* width */
+::-webkit-scrollbar {
+  width: 0.25rem;
+  border-radius: 0.125rem;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  border-radius: 0.125rem;
+  background-color: lightgray;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  border-radius: 0.125rem;
+  background-color: gray;
+}
+
+/*custom toast*/
+.custom-snackbar {
+	opacity: 1;
+  min-width: 250px;
+  background-color: #339a37;
+  color: #fff;
+  text-align: center;
+  border-radius:2px;
+  padding: 16px;
+  position: fixed;
+  z-index: 999;
+  right: 5%;
+  top: 5%;
+  font-size: 15px;
+  box-shadow: 2px 2px 13px #bbbaba;
+  cursor:pointer;
+  transition: all 400ms ease;
+  &.error {
+    background: #bf360c;
+  }
+  &.warning {
+    background: #FFC007;
+  }
+  &.success {
+    background: #339a37;
+  }
+  
+}
+.snackbar-hidden {
+  opacity: 0;
+}

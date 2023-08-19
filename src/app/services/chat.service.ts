@@ -13,6 +13,7 @@ export class ChatService {
   private apiUser = '/api/Users/'
   private apiMessages = '/api/Messages/GetByConversation'
   private apiBox = '/api/Boxs/'
+  private apiRoom = '/api/Rooms/'
 
   constructor(private http: HttpClient) { }
 
@@ -57,5 +58,21 @@ export class ChatService {
 
     const url = this.baseUrl + this.apiBox + 'GetByUserId';
     return this.http.get(url, { params });
+  }
+  
+  getAllRoom(obj) : Observable<any> {
+    let params = new HttpParams();
+    params = params.append('Keyword', obj.Keyword);
+    params = params.append('PageNumber', obj.PageNumber ? obj.PageNumber : 1);
+    params = params.append('PageSize', obj.PageSize ? obj.PageSize : 10 );
+
+    const url = this.baseUrl + this.apiRoom + 'GetAllRooms';
+    return this.http.get(url, { params });
+  }
+
+  addRoomChat(obj: any) {
+    let url = this.baseUrl + this.apiRoom + "CreateRoom";
+    const body = JSON.stringify(obj);
+    return this.http.post(url, body, httpOptions).toPromise();
   }
 }
