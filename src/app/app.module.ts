@@ -21,11 +21,12 @@ import { FormComponent } from './pages/form/form.component';
 import { CommonService } from './services/common.service';
 import { PageNotFoundComponent } from './pages/pageNotFound/pageNotFound.component';
 import { SettingComponent } from './pages/setting/setting.component';
-import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { appReducer } from './reducers/app.reducer';
 import { AppEffects } from './effects/app.effects';
 import { ModalComponent } from './pages/modal/modal.component';
+import { StoreModule, ActionReducerMap, MetaReducer } from '@ngrx/store';
+import { initialAppState } from './states/app.state';
 
 
 registerLocaleData(en);

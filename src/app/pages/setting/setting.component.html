@@ -6,7 +6,7 @@
   </div>
   
   <div class="block-setting">
-    <h2>*Change theme sidebar</h2>
+    <h2>→ Change theme sidebar</h2>
     <div class="list-color" id="pick-color">
       <div *ngFor="let data of listColorMenuBar">
         <input [id]="data" type="radio" [value]="data" [name]="data" />
@@ -16,7 +16,7 @@
   </div>
 
   <div class="block-setting">
-    <h2>*Change theme panel chat</h2>
+    <h2>→ Change theme panel chat</h2>
     <div class="list-theme">
       <div *ngFor="let data of listBgTheme" class="theme" (click)="changeBgTheme(data)" 
       [ngClass]="[data]"

@@ -1,6 +1,6 @@
-import { Component, ViewChild, Input, OnInit, NgZone, ElementRef, SimpleChanges, OnChanges } from '@angular/core';
+import { Component, ViewChild, Input, OnInit, NgZone, ElementRef, SimpleChanges, OnChanges, HostListener, ViewChildren, QueryList } from '@angular/core';
 import { Router } from '@angular/router';
-import { selectVariable2 } from 'src/app/selectors/app.selectors';
+import { selectBgTheme } from 'src/app/selectors/app.selectors';
 import { ChatService } from 'src/app/services/chat.service';
 import { SignalRService } from 'src/app/services/signalr.service';
 import { Store, select } from '@ngrx/store';
@@ -12,34 +12,39 @@ import { AppState } from 'src/app/states/app.state';
   styleUrls: ['./chatDetail.component.scss']
 })
 export class ChatDetailComponent implements OnInit,OnChanges {
-  @ViewChild('messageContainer') private messageContainerRef: ElementRef;
+  @ViewChild('messageContainer') messageContainerRef: ElementRef;
   @Input() idParam: string = '';
   @Input() currUser: any;
   @Input() status: boolean = false;
   @Input() roomIdParam: string = '';
+  @Input() flagConnect: boolean = false;
 
   userChatWith: any = {};
-  roomChat: any = {
-    name: 'aBC',
-  };
+  roomChat: any = {};
   inputChat: string = '';
   toggled: boolean = false;
   listMessage: any = [];
-  filterParam: any = {
+  filterParamMess: any = {
     UserId: '',
     ConversationId: '',
     PageNumber: 1,
-    PageSize: 9999
+    PageSize: 20
+  }
+  filterParamRoomMes: any = {
+    RoomId: this.roomIdParam,
+    PageNumber: 1,
+    PageSize: 20
   }
   isLoading: boolean = true;
-  bgThemeData$ = this.store.pipe(select(selectVariable2));
+  bgThemeData$ = this.store.pipe(select(selectBgTheme));
+  inputChatRoom: string = '';
 
   constructor(
     private ChatSrv: ChatService,
     private signalRService: SignalRService,
     private ngZone: NgZone,
     private router: Router,
-    private store: Store<AppState>
+    private store: Store<AppState>,
     ) { }
 
   ngOnInit() {
@@ -56,6 +61,7 @@ export class ChatDetailComponent implements OnInit,OnChanges {
           this.signalRService.ReadMessage(obj);
         }
         this.ngZone.run(() => { });
+        this.scrollToBottom();
       }
     })
     this.signalRService.onConnected(data => {
@@ -74,11 +80,32 @@ export class ChatDetailComponent implements OnInit,OnChanges {
     this.signalRService.OnPushAnyNotiJoinRoom(data => {
       if (this.roomIdParam && this.roomIdParam === data.roomId) {
         const dataNoti = {
-          ...data,
-          isNoti: true
+          Content: data.content,
+          Created: data.created,
+          SenderId: data.senderId,
+          AvatarId: data.avatarId,
+          AnonymousName: data.anonymousName,
+          IsNoti: true
         }
         this.listMessage.push(dataNoti);
         this.ngZone.run(() => { });
+        this.scrollToBottom();
+      }
+    })
+
+    this.signalRService.OnReceiveMessageRoom((data) => {
+      // viết hoa chữ cái đầu của key 
+      const itemMess = {
+        Content: data.content,
+        Created: data.created,
+        SenderId: data.senderId,
+        AvatarId: data.avatarId,
+        AnonymousName: data.anonymousName
+      }
+      if (this.roomIdParam === data.roomId) {
+        this.listMessage.push(itemMess);
+        this.ngZone.run(() => { });
+        this.scrollToBottom();
       }
     })
   }
@@ -86,14 +113,41 @@ export class ChatDetailComponent implements OnInit,OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.idParam && this.idParam) {
-      this.filterParam = {
-        ...this.filterParam,
+      this.listMessage = [];
+      this.isLoading = true;
+      this.filterParamMess = {
+        PageNumber: 1,
+        PageSize: 20,
         UserId: this.currUser.Id,
         ConversationId: this.idParam
       }
-    this.ChatSrv.Messages(this.filterParam).toPromise().then((resp: any) => {
+      this.fetchMessPerson(this.filterParamMess);
+    }
+
+    // connect thành công mới push noti đã vào phòng
+    if (this.flagConnect) {
+      this.signalRService.PushAnyNotiJoinRoom(this.roomIdParam);
+    }
+    if (changes.roomIdParam && this.roomIdParam) {
+      this.isLoading = true;
+      this.listMessage = [];
+      this.filterParamRoomMes = {
+        PageNumber: 1,
+        PageSize: 20,
+        RoomId: this.roomIdParam,
+      }
+      this.fetchMessRoom(this.filterParamRoomMes);
+    }
+  }
+  scrollToBottom() {
+    try {
+      this.messageContainerRef.nativeElement.scrollTop = this.messageContainerRef.nativeElement.scrollHeight;
+    } catch (err) { }
+  }
+  fetchMessPerson(params) {
+    this.ChatSrv.Messages(params).toPromise().then((resp: any) => {
       if (resp.Succeeded) {
-        this.listMessage = resp.Data.Messages;
+        this.listMessage = [...resp.Data.Messages, ...this.listMessage];
         this.userChatWith = {
           ...this.userChatWith,
           AvatarBgColor: resp.Data.AvatarBgColor,
@@ -103,54 +157,37 @@ export class ChatDetailComponent implements OnInit,OnChanges {
         }
         this.isLoading = false;
         } else  this.router.navigate(['/chat'])
-      })
-    }
+    })
+  }
 
-    if (changes.roomIdParam && this.roomIdParam) {
-      this.signalRService.PushAnyNotiJoinRoom(this.roomIdParam);
-
-      this.listMessage = [{
-        id: '64deec38465dd9ec2c20005a',
-        created: '2023-08-18T03:57:44.649Z',
-        deleted: false,
-        conversationId: '64d9a4292315357ce47b90fd64db4d692301839cfbc9b115',
-        senderId: '64d9a4292315357ce47b90fd',
-        senderName: 'tra',
-        receiverId: '64db4d692301839cfbc9b115',
-        receiverName: 'vinh',
-        content: 'abc',
-        isSeen: true,
-        avatarId: '64d9a4292315357ce47b90fd123'
-      },
-      {
-        id: '64deec83465dd9ec2c20005c',
-        created: '2023-08-18T03:58:59.355Z',
-        deleted: false,
-        conversationId: '64d9a4292315357ce47b90fd64db4d692301839cfbc9b115',
-        senderId: '64db4d692301839cfbc9b115',
-        senderName: 'vinh',
-        receiverId: '64d9a4292315357ce47b90fd',
-        receiverName: 'tra',
-        content: 'ádasd',
-        isSeen: true,
-        avatarId: '64d9a4292315357ce47b90fd234'
-      }];
-      this.isLoading = false;
-    }
+  fetchMessRoom(params) {
+    this.ChatSrv.MessagesRoom(params).toPromise().then((resp: any) => {
+      if (resp.Succeeded) {
+        this.listMessage = [...resp.Data.Messages, ...this.listMessage];
+        this.roomChat = {
+          ...this.roomChat,
+          Name: resp.Data.Name
+        }
+        this.isLoading = false;
+        } else  this.router.navigate(['/chat'])
+    })
   }
 
   checkIsEmpty(obj) {
     return Object.keys(obj).length === 0;
   }
 
-  ngAfterViewChecked() {
-    this.scrollMessageContainerToBottom();
-  }
-
-  private scrollMessageContainerToBottom() {
-    try {
-      this.messageContainerRef.nativeElement.scrollTop = this.messageContainerRef.nativeElement.scrollHeight;
-    } catch (err) { }
+  onChatScroll(event: any) {
+    const div = event.target;
+    if (div.scrollTop === 0) { 
+      if (this.roomIdParam) {
+        this.filterParamRoomMes.PageNumber++;
+        this.fetchMessRoom(this.filterParamRoomMes);
+      } else {
+        this.filterParamRoomMes.PageNumber++;
+        this.fetchMessPerson(this.filterParamMess);
+      }
+    }
   }
 
   handleSelection(event) {
@@ -168,9 +205,13 @@ export class ChatDetailComponent implements OnInit,OnChanges {
     return (objCurrent.senderId !== objPre.senderId
       || (objCurrent.senderId === objPre.senderId && this.checkTime(objCurrent.created, objPre.created)))
   }
+  checkShowAvatarInRoom(objCurrent, objPre) {
+    return (objCurrent.SenderId !== objPre.SenderId)
+  }
   onEnterKeyPressed(event): void {
     event.preventDefault();
     if (this.inputChat) { this.sendMess();}
+    if (this.inputChatRoom) { this.sendMessRoom();}
   }
 
   sendMess() {
@@ -183,5 +224,14 @@ export class ChatDetailComponent implements OnInit,OnChanges {
     }
     this.signalRService.sendMessageChat(mess);
     this.inputChat = '';
+  }
+
+  sendMessRoom() {
+    const obj = {
+      Content: this.inputChatRoom,
+      RoomId: this.roomIdParam
+    }
+    this.signalRService.SendMessageToRoom(obj);
+    this.inputChatRoom = '';
   }
 }

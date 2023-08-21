@@ -1,7 +1,8 @@
 import { Component, ElementRef, NgZone, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
-import { selectVariable2 } from 'src/app/selectors/app.selectors';
+import { setBgTheme } from 'src/app/actions/app.actions';
+import { selectBgTheme } from 'src/app/selectors/app.selectors';
 import { ChatService } from 'src/app/services/chat.service';
 import { SignalRService } from 'src/app/services/signalr.service';
 import { SnackbarService } from 'src/app/services/snackbar.service';
@@ -45,7 +46,10 @@ export class Chat_v2Component implements OnInit {
   listRoomChat: any = [];
   roomIdParam: string = '';
   roomChatActive: string = '';
-  bgThemeData$ = this.store.pipe(select(selectVariable2));
+  bgThemeData$ = this.store.pipe(select(selectBgTheme));
+  flagConnect: boolean = false;
+  isLoadingListUser: boolean = false;
+  isLoadingListRoom: boolean = false;
   constructor(
     private route: ActivatedRoute,
     private chatSrv: ChatService,
@@ -60,6 +64,10 @@ export class Chat_v2Component implements OnInit {
   ngOnInit() {
     this.currUser = JSON.parse(this.currUser);
 
+    const savedState = localStorage.getItem('bgTheme');
+    if (savedState) {
+      this.store.dispatch(setBgTheme({ newValue: savedState }));
+    }
     // show toast notify window
     if ('Notification' in window) {
       if (Notification.permission !== 'granted') {
@@ -96,7 +104,9 @@ export class Chat_v2Component implements OnInit {
     });
 
     // connect signalR
-    this.signalRService.startConnectChat(this.currUser.Id);
+    this.signalRService.connectAndPerformAction(this.currUser.Id).then(() => {
+      this.flagConnect = true;
+    });
     this.signalRService.onConnected(data => {
       if (data.succeeded) {
         this.changeStatus(data);
@@ -146,14 +156,29 @@ export class Chat_v2Component implements OnInit {
           Created: data.created,
           SenderId: data.senderId
       }
-      this.listUserChat.push(dataBox);
+      this.listUserChat.unshift(dataBox);
       this.ngZone.run(() => { });
     })
     this.signalRService.onReceiveNotificationMessage(data => {
       if (data.succeeded) this.toastNotification(`${data.data.content}`);
     });
     this.signalRService.OnPushRoomToAny(data => {
-      this.listRoomChat.push(data);
+      this.listRoomChat.unshift(data);
+      this.ngZone.run(() => { });
+    })
+
+    this.signalRService.OnReceiveMessageRoom((data) => {
+      this.listRoomChat = this.listRoomChat.map((item) => {
+        if (data.id === item.roomId) {
+          item = {
+            ...item,
+            content: data.content,
+            created: data.created
+          }
+        }
+        return item;
+      })
+      this.ngZone.run(() => { });
     })
   }
 
@@ -170,18 +195,22 @@ export class Chat_v2Component implements OnInit {
   }
 
   fetchListUser(param: any) {
+    this.isLoadingListUser = true;
     this.chatSrv.getListUser(param).subscribe((resp: any) => {
       if (resp.Succeeded) {
         this.listUserChat = resp.Data;
       }
+      this.isLoadingListUser = false;
     })
   }
 
   fetchListRoom(param: any) {
+    this.isLoadingListRoom = true
     this.chatSrv.getAllRoom(param).subscribe((resp: any) => {
       if (resp.Succeeded) {
         this.listRoomChat = resp.Data
       }
+      this.isLoadingListRoom = false
     })
   }
 
@@ -219,7 +248,7 @@ export class Chat_v2Component implements OnInit {
         this.hasId = true;
         this.userChatWith = data;
         // this.router.navigate(['/chat', resp.Data.ConversationId]);
-        this.router.navigate([], { queryParams: { id: resp.Data.ConversationId }, queryParamsHandling: 'merge' });
+        this.router.navigate([], { queryParams: { id: resp.Data.ConversationId } });
         
         if (this.userChatWith.Content) this.readMessage();
       } else this.snackbarService.show('error', resp.Message);
@@ -250,10 +279,10 @@ export class Chat_v2Component implements OnInit {
     this.hasId = true;
   }
   openTooltipSearch() {
-    // this.showSearch = true;
+    this.showSearch = true;
     this.renderer.listen('document', 'click', (event: Event) => {
       if (!this.searchInput.nativeElement.contains(event.target)) {
-        // this.showSearch = false;
+        this.showSearch = false;
       }
     });
   }

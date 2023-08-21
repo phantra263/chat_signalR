@@ -1,7 +1,7 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Store, select  } from '@ngrx/store';
-import { selectVariable1, selectVariable2 } from 'src/app/selectors/app.selectors';
-import { setVariable1, setVariable2 } from 'src/app/actions/app.actions';
+import { selectColorTheme, selectBgTheme } from 'src/app/selectors/app.selectors';
+import { setColorTheme, setBgTheme } from 'src/app/actions/app.actions';
 
 @Component({
   selector: 'app-setting',
@@ -18,26 +18,26 @@ export class SettingComponent implements OnInit {
   constructor(private store: Store) { }
 
   ngOnInit() {
-    this.store.pipe(select(selectVariable1)).subscribe(data => {
-      this.activeColor = data; 
-    });
-    this.store.pipe(select(selectVariable2)).subscribe(data => {
-      this.activeBgTheme = data; 
-    });
+    this.store.pipe(select(selectColorTheme)).subscribe(data => this.activeColor = data);
+    this.store.pipe(select(selectBgTheme)).subscribe(data => this.activeBgTheme = data);
   }
 
   changeColorMenu(data) {
-    this.activeColor = data
-    this.store.dispatch(setVariable1({ newValue: data }));
+    this.activeColor = data;
+    this.dispatchAndSetLocalStorage(setColorTheme, 'colorTheme', data);
   }
-
+  
   changeBgTheme(data) {
     this.activeBgTheme = data;
-    this.store.dispatch(setVariable2({ newValue: data }));
+    this.dispatchAndSetLocalStorage(setBgTheme, 'bgTheme', data);
   }
-
+  
+  private dispatchAndSetLocalStorage(action, localStorageKey, newValue) {
+    this.store.dispatch(action({ newValue }));
+    localStorage.setItem(localStorageKey, newValue);
+  }
+  
   closeSetting() {
     this.closeSetting$.emit();
   }
-
 }

@@ -24,7 +24,7 @@
         <h1>Rooms</h1>
         <button (click)="flagModalAddRoom = true">Add</button>
       </div>
-      <ul class="list-chat">
+      <ul class="list-chat" *ngIf="!isLoadingListRoom">
         <li *ngFor="let data of listRoomChat" (click)="startChatRoom(data)" [ngClass]="data.id === roomIdParam ? 'active' : ''">
           <div class="wrap-avartar">
             {{data.name[0]}}
@@ -39,11 +39,21 @@
           </div>
         </li>
       </ul>
+
+      <ul *ngIf="isLoadingListRoom" class="skeleton-list-user">
+        <div class="header" *ngFor="let data of [1, 2]">
+          <div class="img"></div>
+          <div class="details">
+            <span class="name"></span>
+            <span class="about"></span>
+          </div>
+        </div>
+      </ul>
     </div>
 
     <div class="list-users panel">
       <h1>Peoples</h1>
-      <ul class="list-chat">
+      <ul class="list-chat" *ngIf="!isLoadingListUser">
         <li *ngFor="let data of listUserChat" (click)="startChat(data)" [ngClass]="data.ConversationId === idParam ? 'active' : ''">
           <div class="wrap-avartar" [ngStyle]="{'background-color' : data.AvatarBgColor}">
             {{ data.Nickname[0] }}
@@ -62,18 +72,28 @@
           </span>
         </li>
       </ul>
+
+      <ul *ngIf="isLoadingListUser" class="skeleton-list-user">
+        <div class="header" *ngFor="let data of [1, 2, 3]">
+          <div class="img"></div>
+          <div class="details">
+            <span class="name"></span>
+            <span class="about"></span>
+          </div>
+        </div>
+      </ul>
     </div>
   </div>
 
   <div class="content-chat" [ngClass]="[!idParam && !roomIdParam ? 'hidden-sp' : '', bgThemeData$ | async]">
     <app-chatDetail *ngIf="idParam || roomIdParam"
-     [idParam]="idParam" [currUser]="currUser" [roomIdParam]="roomIdParam"></app-chatDetail>
+     [idParam]="idParam" [currUser]="currUser" [roomIdParam]="roomIdParam" [flagConnect]="flagConnect"></app-chatDetail>
     <p *ngIf="!idParam && !roomIdParam" class="empty">Hãy chọn một đoạn chat hoặc bắt đầu cuộc trò chuyện mới</p>
   </div>
 </div>
 
 <!-- modal add room -->
-<app-modal [modalVisible]="flagModalAddRoom" (closeModal$)="flagModalAddRoom = false">
+<app-modal [modalVisible]="flagModalAddRoom" (closeModal$)="flagModalAddRoom = false" >
   <div class="content-modal">
     <h1>Create room chat!</h1>
 

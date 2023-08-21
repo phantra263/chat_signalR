@@ -10,17 +10,23 @@ export class SignalRService {
   private apiUrl = 'https://www.app-chat.somee.com';
   // private apiUrl = 'http://192.168.2.173';
 
-  startConnectChat(id: string): void {
+  async startConnectChat(id: string): Promise<void> {
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(this.apiUrl + `/hub/chat?userId=${id}`)
       .withAutomaticReconnect()
       .build();
+  
+    try {
+      await this.hubConnection.start();
+      console.info('Kết nối thành công');
+    } catch (err) {
+      console.error('Xảy ra lỗi khi connect đến signal hub: ' + err);
+    }
+  }
 
-    this.hubConnection.start()
-      .then(() => {
-        console.info('Kết nối thành công');
-      })
-      .catch(err => console.error('Xảy ra lỗi khi connect đến signal hub: ' + err));
+  async connectAndPerformAction(id: string) {
+    await this.startConnectChat(id); // Wait for the connection to be established
+    // Perform your desired action here
   }
 
   stopConnection() {
@@ -106,11 +112,22 @@ export class SignalRService {
 
   PushAnyNotiJoinRoom(roomId: string): void {
     this.hubConnection.invoke('PushAnyNotiJoinRoom', roomId)
-      .catch(err => console.error('Xảy ra lỗi khi mới vào phòng chat: ', err));
+      // .catch(err => console.error('Xảy ra lỗi khi mới vào phòng chat: ', err));
   }
 
   OnPushAnyNotiJoinRoom(callback: (data: any) => void) {
     this.hubConnection.on('OnPushAnyNotiJoinRoom', data => {
+      callback(data);
+    });
+  }
+
+  SendMessageToRoom(mess: object): void {
+    this.hubConnection.invoke('SendMessageToRoom', mess)
+      .catch(err => console.error('Xảy ra lỗi khi gửi tin nhắn trong phòng chat: ', err));
+  }
+
+  OnReceiveMessageRoom(callback: (data: any) => void) {
+    this.hubConnection.on('OnReceiveMessageRoom', data => {
       callback(data);
     });
   }

@@ -10,10 +10,11 @@ import { httpOptions } from '../common/httpOptions';
 export class ChatService {
   private baseUrl = environment.apiUrl;
   private apiController = '/api/v1/Chat';
-  private apiUser = '/api/Users/'
-  private apiMessages = '/api/Messages/GetByConversation'
-  private apiBox = '/api/Boxs/'
-  private apiRoom = '/api/Rooms/'
+  private apiUser = '/api/Users/';
+  private apiMessages = '/api/Messages/GetByConversation';
+  private apiBox = '/api/Boxs/';
+  private apiRoom = '/api/Rooms/';
+  private apiMessRoom = '/api/MessageRooms/GetMessageInRoom';
 
   constructor(private http: HttpClient) { }
 
@@ -74,5 +75,14 @@ export class ChatService {
     let url = this.baseUrl + this.apiRoom + "CreateRoom";
     const body = JSON.stringify(obj);
     return this.http.post(url, body, httpOptions).toPromise();
+  }
+
+  MessagesRoom(obj): Observable<any> {
+    let params = new HttpParams();
+    params = params.append('RoomId', obj.RoomId);
+    params = params.append('PageNumber', obj.PageNumber ? obj.PageNumber : 1);
+    params = params.append('PageSize', obj.PageSize ? obj.PageSize : 10 );
+    const url = this.baseUrl + this.apiMessRoom
+    return this.http.get(url, { params });
   }
 }

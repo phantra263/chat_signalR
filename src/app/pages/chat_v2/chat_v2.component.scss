@@ -197,10 +197,13 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 100%;
+      width: auto;
       color: #65676b;
       font-size: 22px;
       text-align: center;
+      padding: 5px;
+      border-radius: 15px;
+      background: #e9f2fa57;
     }
   }
 }
@@ -240,5 +243,66 @@
   .err-addroom {
     color: red;
     font-size: 12px;
+  }
+}
+
+.skeleton-list-user {
+  .header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .img{
+    height: 50px;
+    width: 50px;
+    background: #d9d9d9;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+    &::before {
+      background-size: 650px 600px;
+    }
+  }
+  .details{
+    margin-left: 20px;
+  }
+  span{
+    display: block;
+    background: #d9d9d9;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    &::before {
+      animation-delay: 0.2s;
+    }
+  }
+  .name{
+    height: 15px;
+    width: 100px;
+  }
+  .about{
+    height: 13px;
+    width: 150px;
+    margin-top: 10px;
+  }
+  .header .img::before,
+  .details span::before {
+    position: absolute;
+    content: "";
+    height: 100%;
+    width: 100%;
+    background-image: linear-gradient(to right, #d9d9d9 0%, rgba(0,0,0,0.05) 20%, #d9d9d9 40%, #d9d9d9 100%);
+    background-repeat: no-repeat;
+    background-size: 450px 400px;
+    animation: shimmer 1s linear infinite;
+  }
+}
+
+@keyframes shimmer {
+  0%{
+    background-position: -450px 0;
+  }
+  100%{
+    background-position: 450px 0;
   }
 }

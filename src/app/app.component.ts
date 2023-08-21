@@ -1,8 +1,8 @@
-import { Component, OnInit, NgZone, Renderer2, HostListener , ElementRef } from '@angular/core';
-import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
-import { selectVariable1 } from './selectors/app.selectors';
+import { selectColorTheme } from './selectors/app.selectors';
 import { AppState } from './states/app.state';
+import { setColorTheme, setBgTheme } from './actions/app.actions';
 
 @Component({
   selector: 'app-root',
@@ -12,7 +12,7 @@ import { AppState } from './states/app.state';
 
 export class AppComponent implements OnInit {
   currUser :any = localStorage.getItem('account') || null;
-  colorMenu$ = this.store.pipe(select(selectVariable1));
+  colorMenu$ = this.store.pipe(select(selectColorTheme));
   flagSetting: boolean = false;
   constructor(
     private store: Store<AppState>
@@ -20,10 +20,14 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.currUser = JSON.parse(this.currUser);
+    const savedState = localStorage.getItem('colorTheme');
+    if (savedState) {
+      this.store.dispatch(setColorTheme({ newValue: savedState }));
+    }
   }
 
   logout() {
-    localStorage.clear();
+    localStorage.removeItem('account');
     window.location.reload();   
   }
 

@@ -16,8 +16,8 @@
       <img src="./assets/images/icon-videocall.png" alt="">
     </div>
   </div>
-  <div class="chat-history" #messageContainer>
-    <div class="mess-empty" *ngIf="listMessage.length === 0">
+  <div class="chat-history" #messageContainer (scroll)="onChatScroll($event)">
+    <div class="mess-empty" *ngIf="listMessage.length === 0 && !isLoading">
       <div class="avatar" [ngStyle]="{'background-color' : userChatWith.AvatarBgColor}">
         {{userChatWith.Nickname[0]}}
       </div>
@@ -39,7 +39,7 @@
           <p class="message">
             {{data.content}}
           </p>
-          <span class="message-data-time">{{ data.created | TimeMessFormat }}</span>
+          <span class="message-data-time time-default">{{ data.created | TimeMessFormat }}</span>
         </div>
       </li>
     </ul>
@@ -67,10 +67,10 @@
     <div class="user">
       <img src="./assets/images/arrow-left.png" alt="" class="icon-back" routerLink="/chat" *ngIf="roomIdParam">
       <div class="avatar" [ngStyle]="{'background-color' : 'grey'}">
-        {{roomChat.name[0]}}
+        {{roomChat.Name[0]}}
       </div>
       <div class="infor">
-        <h5>{{roomChat.name}}</h5>
+        <h5>{{roomChat.Name}}</h5>
       </div>
     </div>
     <div class="control">
@@ -78,8 +78,8 @@
       <img src="./assets/images/icon-videocall.png" alt="">
     </div>
   </div>
-  <div class="chat-history" #messageContainer>
-    <div class="mess-empty" *ngIf="listMessage.length === 0">
+  <div class="chat-history" #messageContainer (scroll)="onChatScroll($event)">
+    <div class="mess-empty" *ngIf="listMessage.length === 0 && !isLoading">
       <div class="avatar">
         <img src="https://robohash.org/2" alt="">
       </div>
@@ -93,31 +93,37 @@
       <li *ngFor="let data of listMessage; let i = index"
         [ngClass]="!(data.isNoti && i > 0 && this.checkShowAvatar(listMessage[i - 1], data)) ? 'mt-0' : ''">
         <!-- tin nhắn bình thường -->
-        <div class="wrap-message" *ngIf="!data.isNoti" [ngClass]="currUser.Id === data.senderId ? 'my-message' : ''">
-          <figure *ngIf="currUser.Id !== data.senderId"
-            [ngClass]="(i === 0 || i > 0 && checkShowAvatar(listMessage[i - 1], data)) ? '' : 'hidden'"
-            [title]="data.Nickname">
-            <img [src]="'https://robohash.org/' + data.avatarId" alt="">
-          </figure>
-          <p class="message">
-            {{data.content}}
-          </p>
-          <span class="message-data-time">{{ data.created | TimeMessFormat }}</span>
+        <div class="wrap-message-room" *ngIf="!data.IsNoti">
+          <div class="avatar-room" *ngIf="(i === 0 || i > 0 && checkShowAvatarInRoom(listMessage[i - 1], data))"
+            [ngClass]="currUser.Id === data.SenderId ? 'my-avatar' : ''"
+            [title]="data.AnonymousName">
+            <img [src]="'https://robohash.org/' + data.AvatarId" alt="">
+            <span>{{data.AnonymousName}}</span>
+          </div>
+          <div class="detail-mess" 
+            [ngClass]="currUser.Id === data.SenderId ? 'my-message' : ''">
+            <p class="message">
+              {{data.Content}}
+            </p>
+            <span class="message-data-time">{{ data.Created | TimeMessFormat }}</span>
+          </div>
         </div>
 
         <!-- thông báo khi có thành viên mới vào nhóm -->
-        <div *ngIf="data.isNoti" class="noti-join-room">
-          <img [src]="'https://robohash.org/' + data.avatarId" alt="">
-          <b style="font-weight: bold; margin-right: 5px;">{{data.anonymousName}}</b>vừa vào phòng!
+        <div *ngIf="data.IsNoti" class="noti-join-room">
+          <img [src]="'https://robohash.org/' + data.AvatarId" alt="">
+          <p>
+            <b style="font-weight: bold; margin-right: 5px;">{{data.AnonymousName}}</b>vừa vào phòng!
+          </p>
         </div>
       </li>
     </ul>
   </div>
   <div class="wrap-input-chat">
     <div class="input-chat">
-      <textarea [(ngModel)]="inputChat" rows="1" (keydown.enter)="onEnterKeyPressed($event)" placeholder="Type your message here..."></textarea>
+      <textarea [(ngModel)]="inputChatRoom" rows="1" (keydown.enter)="onEnterKeyPressed($event)" placeholder="Type your message here..."></textarea>
     </div>
-    <button [disabled]="!inputChat.trim() ? true : false" (click)="sendMess()">
+    <button [disabled]="!inputChatRoom.trim() ? true : false" (click)="sendMessRoom()">
       Send
     </button>
   </div>

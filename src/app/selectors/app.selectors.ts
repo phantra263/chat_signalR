@@ -5,12 +5,12 @@ import { AppState } from '../states/app.state';
 export const selectAppState = createFeatureSelector<AppState>('app');
 
 // Tạo selector để lấy dữ liệu từ trạng thái ứng dụng
-export const selectVariable1  = createSelector(
+export const selectColorTheme  = createSelector(
   selectAppState,
   (state: AppState) => state.colorTheme
 );
 
-export const selectVariable2 = createSelector(
+export const selectBgTheme = createSelector(
   selectAppState,
   (state: AppState) => state.bgTheme
 );
