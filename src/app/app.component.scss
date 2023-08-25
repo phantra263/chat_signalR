@@ -2,6 +2,24 @@ main {
   display: flex;
   // padding: 10px;
   background: #EFF6FC;
+  &.show-menu-left {
+    .side-bar {
+      visibility: visible;
+      animation: fade .3s;
+      transition: all .3s;
+    }
+    &::after {
+      content: '';
+      position: absolute;
+      background: #515456c7;
+      width: 100vw;
+      height: 100vh;
+      top: 0;
+      left: 0;
+      z-index: 5;
+    }
+  } 
+
   .side-bar {
     // position: fixed;
     // left: 20px;
@@ -15,6 +33,16 @@ main {
     background: var(--bg-menu);
     width: 70px;
     padding: 20px 0;
+    @media only screen and (max-width: 767px) {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 70px;
+      z-index: 10;
+      visibility: hidden;
+      animation: fadeOut .3s;
+      transition: all .3s;
+    }
 
     .avatar {
       width: 40px;
@@ -66,5 +94,23 @@ main {
     overflow-y: auto;
     margin: 10px;
     position: relative;
+  }
+}
+
+@keyframes fade {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translate(0);
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translate(-100%);
   }
 }

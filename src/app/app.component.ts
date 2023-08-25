@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
-import { selectColorTheme } from './selectors/app.selectors';
+import { selectColorTheme, selectFlagMenu } from './selectors/app.selectors';
 import { AppState } from './states/app.state';
 import { setColorTheme, setBgTheme } from './actions/app.actions';
 
@@ -11,9 +11,13 @@ import { setColorTheme, setBgTheme } from './actions/app.actions';
 })
 
 export class AppComponent implements OnInit {
-  currUser :any = localStorage.getItem('account') || null;
+  currentRoute(currentRoute: any) {
+    throw new Error('Method not implemented.');
+  }
+  currUser: any = localStorage.getItem('account') || null;
   colorMenu$ = this.store.pipe(select(selectColorTheme));
   flagSetting: boolean = false;
+  flagMenuLeft = this.store.pipe(select(selectFlagMenu));
   constructor(
     private store: Store<AppState>
   ) {}

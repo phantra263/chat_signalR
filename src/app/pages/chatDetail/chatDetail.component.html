@@ -1,6 +1,6 @@
 <!-- chat 1 vs 1 -->
-<div class="wrap-content" *ngIf="!checkIsEmpty(userChatWith) && idParam">
-  <div class="header">
+<div class="wrap-content" *ngIf="idParam">
+  <div class="header" *ngIf="!checkIsEmpty(userChatWith)">
     <div class="user">
       <img src="./assets/images/arrow-left.png" alt="" class="icon-back" routerLink="/chat" *ngIf="idParam">
       <div class="avatar" [ngStyle]="{'background-color' : userChatWith.AvatarBgColor}">
@@ -16,7 +16,7 @@
       <img src="./assets/images/icon-videocall.png" alt="">
     </div>
   </div>
-  <div class="chat-history" #messageContainer (scroll)="onChatScroll($event)">
+  <div class="chat-history" #messageContainer (scroll)="onChatScroll($event)" *ngIf="!checkIsEmpty(userChatWith)">
     <div class="mess-empty" *ngIf="listMessage.length === 0 && !isLoading">
       <div class="avatar" [ngStyle]="{'background-color' : userChatWith.AvatarBgColor}">
         {{userChatWith.Nickname[0]}}
@@ -62,8 +62,8 @@
 </div>
 
 <!-- chat room -->
-<div class="wrap-content" *ngIf="!checkIsEmpty(roomChat) && roomIdParam">
-  <div class="header">
+<div class="wrap-content" *ngIf="roomIdParam">
+  <div class="header" *ngIf="!checkIsEmpty(roomChat)">
     <div class="user">
       <img src="./assets/images/arrow-left.png" alt="" class="icon-back" routerLink="/chat" *ngIf="roomIdParam">
       <div class="avatar" [ngStyle]="{'background-color' : 'grey'}">
@@ -78,7 +78,7 @@
       <img src="./assets/images/icon-videocall.png" alt="">
     </div>
   </div>
-  <div class="chat-history" #messageContainer (scroll)="onChatScroll($event)">
+  <div class="chat-history" #messageContainer (scroll)="onChatScroll($event)" *ngIf="!checkIsEmpty(roomChat)">
     <div class="mess-empty" *ngIf="listMessage.length === 0 && !isLoading">
       <div class="avatar">
         <img src="https://robohash.org/2" alt="">
@@ -122,6 +122,13 @@
   <div class="wrap-input-chat">
     <div class="input-chat">
       <textarea [(ngModel)]="inputChatRoom" rows="1" (keydown.enter)="onEnterKeyPressed($event)" placeholder="Type your message here..."></textarea>
+      <!-- <span class="pick-emoji"
+        (click)="toggled = !toggled"
+        [(emojiPickerIf)]="toggled"
+        [emojiPickerDirection]="'left'"
+        (emojiPickerSelect)="handleSelection($event)">
+        <img src="./assets/images/icon-face.png" alt="">
+      </span> -->
     </div>
     <button [disabled]="!inputChatRoom.trim() ? true : false" (click)="sendMessRoom()">
       Send

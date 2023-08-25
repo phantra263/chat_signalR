@@ -1,8 +1,8 @@
 import { Component, ElementRef, NgZone, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
-import { setBgTheme } from 'src/app/actions/app.actions';
-import { selectBgTheme } from 'src/app/selectors/app.selectors';
+import { setBgTheme, setFlagMenu } from 'src/app/actions/app.actions';
+import { selectBgTheme, selectFlagMenu } from 'src/app/selectors/app.selectors';
 import { ChatService } from 'src/app/services/chat.service';
 import { SignalRService } from 'src/app/services/signalr.service';
 import { SnackbarService } from 'src/app/services/snackbar.service';
@@ -15,12 +15,13 @@ import { AppState } from 'src/app/states/app.state';
 })
 export class Chat_v2Component implements OnInit {
   @ViewChild('searchInput') searchInput: ElementRef;
+
   shouldSendEvent: boolean = true;
   hasId: boolean = false;
   showSearch: boolean = false;
   listSearch: any = [];
   inputSearch: string = '';
-  currUser :any = localStorage.getItem('account');
+  currUser:any = localStorage.getItem('account');
   listUserChat: any = [];
   userChatWith: any = {};
   selectedIndex: number = -1;
@@ -50,6 +51,7 @@ export class Chat_v2Component implements OnInit {
   flagConnect: boolean = false;
   isLoadingListUser: boolean = false;
   isLoadingListRoom: boolean = false;
+  flagMenu: boolean = false;
   constructor(
     private route: ActivatedRoute,
     private chatSrv: ChatService,
@@ -169,7 +171,7 @@ export class Chat_v2Component implements OnInit {
 
     this.signalRService.OnReceiveMessageRoom((data) => {
       this.listRoomChat = this.listRoomChat.map((item) => {
-        if (data.id === item.roomId) {
+        if (data.roomId === item.id) {
           item = {
             ...item,
             content: data.content,
@@ -247,7 +249,6 @@ export class Chat_v2Component implements OnInit {
         }
         this.hasId = true;
         this.userChatWith = data;
-        // this.router.navigate(['/chat', resp.Data.ConversationId]);
         this.router.navigate([], { queryParams: { id: resp.Data.ConversationId } });
         
         if (this.userChatWith.Content) this.readMessage();
@@ -271,11 +272,15 @@ export class Chat_v2Component implements OnInit {
     //read message
     if (this.userChatWith.Content) this.readMessage();
     this.router.navigate([], { queryParams: { id: data.ConversationId } });
+    this.idParam = data.ConversationId
+    this.roomIdParam = '';
     this.hasId = true;
   }
   startChatRoom(data) {
     this.roomChatActive = data;
     this.router.navigate([], { queryParams: { roomId: data.id }});
+    this.roomIdParam = data.id;
+    this.idParam = '';
     this.hasId = true;
   }
   openTooltipSearch() {
@@ -331,5 +336,10 @@ export class Chat_v2Component implements OnInit {
   closeModal() {
     this.flagModalAddRoom = false;
     this.nameRoom = '';
+  }
+
+  flagMenuLeft() {
+    this.flagMenu = !this.flagMenu;
+    this.store.dispatch(setFlagMenu({newValue: this.flagMenu}));
   }
 }

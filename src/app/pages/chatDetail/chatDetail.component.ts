@@ -15,7 +15,6 @@ export class ChatDetailComponent implements OnInit,OnChanges {
   @ViewChild('messageContainer') messageContainerRef: ElementRef;
   @Input() idParam: string = '';
   @Input() currUser: any;
-  @Input() status: boolean = false;
   @Input() roomIdParam: string = '';
   @Input() flagConnect: boolean = false;
 
@@ -128,9 +127,10 @@ export class ChatDetailComponent implements OnInit,OnChanges {
     if (this.flagConnect) {
       this.signalRService.PushAnyNotiJoinRoom(this.roomIdParam);
     }
+
     if (changes.roomIdParam && this.roomIdParam) {
-      this.isLoading = true;
       this.listMessage = [];
+      this.isLoading = true;
       this.filterParamRoomMes = {
         PageNumber: 1,
         PageSize: 20,
@@ -191,7 +191,10 @@ export class ChatDetailComponent implements OnInit,OnChanges {
   }
 
   handleSelection(event) {
-    this.inputChat += event.char;
+    if (this.idParam) {
+      this.inputChat += event.char;
+    } else this.inputChatRoom += event.char;
+    
   }
   checkTime(time1, time2) {
     const parseTime1 = new Date(time1);

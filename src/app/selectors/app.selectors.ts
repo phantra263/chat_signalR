@@ -14,3 +14,8 @@ export const selectBgTheme = createSelector(
   selectAppState,
   (state: AppState) => state.bgTheme
 );
+
+export const selectFlagMenu = createSelector(
+  selectAppState,
+  (state: AppState) => state.flagMenuOnSp
+);

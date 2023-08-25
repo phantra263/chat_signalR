@@ -1,4 +1,5 @@
-<main *ngIf="currUser" [ngClass]="getClassNameFromColor(colorMenu$ | async)">
+<main *ngIf="currUser" 
+  [ngClass]="[getClassNameFromColor(colorMenu$ | async), (flagMenuLeft | async) ? 'show-menu-left' : '']">
   <div class="side-bar">
     <div class="avatar" [ngStyle]="{'background-color' : currUser.AvatarBgColor}" [title]="currUser.Nickname">
       {{currUser.Nickname[0]}}

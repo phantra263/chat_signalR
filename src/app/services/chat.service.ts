@@ -8,9 +8,9 @@ import { httpOptions } from '../common/httpOptions';
   providedIn: 'root'
 })
 export class ChatService {
-  private baseUrl = environment.apiUrl;
+  public baseUrl = environment.apiUrl;
   private apiController = '/api/v1/Chat';
-  private apiUser = '/api/Users/';
+  public apiUser = '/api/Users/';
   private apiMessages = '/api/Messages/GetByConversation';
   private apiBox = '/api/Boxs/';
   private apiRoom = '/api/Rooms/';

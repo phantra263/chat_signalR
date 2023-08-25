@@ -8,12 +8,7 @@ export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: '/chat' },
   // { path: 'chat', component: ChatComponent },
   // { path: 'chat', component: Chat_v2Component },
-  { path: 'chat',
-    children: [
-      { path: '', component: Chat_v2Component },
-      { path: ':id', component: Chat_v2Component }
-    ]
-  },
+  { path: 'chat', component: Chat_v2Component },
   { path: '404', component: PageNotFoundComponent },
   { path: '**', redirectTo: '/404' }
 ];

@@ -17,6 +17,13 @@
           </li>
         </ul>
       </div>
+
+      <!-- MENU ON SP -->
+      <ul class="menu-bar" [ngClass]="flagMenu ? 'active' : ''" (click)="flagMenuLeft()">
+        <li class="bar-01"></li>
+        <li class="bar-02"></li>
+        <li class="bar-03"></li>
+      </ul>
     </div>
 
     <div class="list-groups panel">
@@ -87,13 +94,15 @@
 
   <div class="content-chat" [ngClass]="[!idParam && !roomIdParam ? 'hidden-sp' : '', bgThemeData$ | async]">
     <app-chatDetail *ngIf="idParam || roomIdParam"
-     [idParam]="idParam" [currUser]="currUser" [roomIdParam]="roomIdParam" [flagConnect]="flagConnect"></app-chatDetail>
+     [idParam]="idParam" [currUser]="currUser" 
+     [roomIdParam]="roomIdParam" 
+     [flagConnect]="flagConnect"></app-chatDetail>
     <p *ngIf="!idParam && !roomIdParam" class="empty">Hãy chọn một đoạn chat hoặc bắt đầu cuộc trò chuyện mới</p>
   </div>
 </div>
 
 <!-- modal add room -->
-<app-modal [modalVisible]="flagModalAddRoom" (closeModal$)="flagModalAddRoom = false" >
+<app-modal [modalVisible]="flagModalAddRoom" (closeModal$)="flagModalAddRoom = false">
   <div class="content-modal">
     <h1>Create room chat!</h1>
 
@@ -104,3 +113,5 @@
     <button class="btn-submit" (click)="onSubmit($event)" type="submit">Create</button>
   </div>
 </app-modal>
+
+<!-- loading global -->

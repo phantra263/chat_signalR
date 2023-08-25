@@ -22,7 +22,11 @@ describe('ModalComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  // kiểm thử directive
+  it('should not show content when flag is false', () => {
+    fixture.componentInstance.modalVisible = false;
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement;
+    expect(compiled.querySelector('div')).toBeFalsy();
   });
 });
