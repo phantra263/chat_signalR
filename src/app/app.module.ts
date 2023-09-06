@@ -26,7 +26,6 @@ import { appReducer } from './reducers/app.reducer';
 import { AppEffects } from './effects/app.effects';
 import { ModalComponent } from './pages/modal/modal.component';
 import { StoreModule, ActionReducerMap, MetaReducer } from '@ngrx/store';
-import { initialAppState } from './states/app.state';
 
 
 registerLocaleData(en);
